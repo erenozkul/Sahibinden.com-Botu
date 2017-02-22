@@ -1,23 +1,30 @@
 <?php
+/**
+ * User: ErenOzkul
+ * Date: 23.02.2017
+ * Time: 01:14
+ */
+
 
 header('Content-type: text/html; charset=utf8');
-require 'sahibinden.class.php';
+require 'class/sahibinden.class.php';
 
 // ana kategoriler
-print_r( Sahibinden::Kategori() );
+//echo Sahibinden::Kategori();
 
 // alt kategoriler
-/*
-Sahibinden::Kategori('emlak');
-*/
+
+//print_r (Sahibinden::Kategori("array","vasita"));
+//echo (Sahibinden::Kategori("json","kiralik"));
+
 
 // kategori içerikleri
-/*
-Sahibinden::Liste('emlak');
-Sahibinden::Liste('emlak', 20); // 2. sayfa
-*/
+
+print_r(Sahibinden::Liste('kiralik-daire',"0","json",));
+//print_r(Sahibinden::Liste('emlak', 20)); // 2. sayfa
+
 
 // içerik detayı (henüz tamamlanmadı)
-/*
-Sahibinden::Detay('http://www.sahibinden.com/ilan/emlak-konut-satilik-dorlion-gayrimenkul-den-yildiztepe-de-sifir-bina-da-2-plus1-153319984/detay');
-*/
+
+//print_r(Sahibinden::Detay('https://www.sahibinden.com/ilan/vasita-arazi-suv-pick-up-land-rover-borusan%2Csahibinden%2C4.4tdv8-vogue-elektrikli-basamak%2Cmultimedia-395082176/detay'));
+

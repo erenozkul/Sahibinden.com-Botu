@@ -1,11 +1,22 @@
 Hakkında
 ====================
 
-Sahibinden.com için php ile bot hazırladım. Dileyenler alıp kendileri de geliştirmeye devam edebilirler.
+Sahibinden.com için @tayfunerbilen 'in eskiden hazırlamış olduğu bot'u güncel hale getirdim. Ve yeni özellikler eklemeye devam edeceğim. 
+Şuan güzel bir şekilde, kategorileri alt kategorileri vs. kategori listelerini  çekmektedir.
 
-Şuan güzel bir şekilde, kategorileri alt kategorileri vs. kategori listelerini ve detaylarını çekmektedir.
+Dilediğiniz 3 formatta return alabilirsiniz;
+
+-json
+-array
+-xml
+
+
+*default olarak json değer dönmektedir.
+
 
 Kullanımı da oldukça basit, aşağıdan bakabilirsiniz.
+
+
 
 Kullanımı
 ====================
@@ -14,18 +25,16 @@ Kullanımı
 <?php
 
 header('Content-type: text/html; charset=utf8');
-require 'sahibinden.class.php';
+require 'class/sahibinden.class.php';
 
 // ana kategoriler
 print_r( Sahibinden::Kategori() );
 
-// alt kategoriler
-print_r( Sahibinden::Kategori('emlak') );
+// alt kategoriler xml formatında
+print_r( Sahibinden::Kategori('emlak',"xml") );
+//alt kategoriler array formatında
+print_r( Sahibinden::Kategori('emlak',"array") );
 
 // kategori içerikleri
-print_r( Sahibinden::Liste('emlak') );
+print_r( Sahibinden::Liste('vasita') );
 // Sahibinden::Liste('emlak', 20); // 2. sayfa
-
-// içerik detayı
-print_r( Sahibinden::Detay('http://www.sahibinden.com/ilan/emlak-konut-satilik-dorlion-gayrimenkul-den-yildiztepe-de-sifir-bina-da-2-plus1-153319984/detay') );
-```
