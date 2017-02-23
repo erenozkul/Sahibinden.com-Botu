@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a94b9a73-1460-4a44-a0db-d6ca867f90bf" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/class/simple_html_dom.php" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/sahibinden.class.php" afterPath="$PROJECT_DIR$/class/sahibinden.class.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.php" afterPath="$PROJECT_DIR$/index.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/class/sahibinden.class.php" afterPath="$PROJECT_DIR$/class/sahibinden.class.php" />
     </list>
     <ignored path="Sahibinden.com-Botu.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,7 +27,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
@@ -54,24 +50,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sahibinden.class.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="sahibinden.class.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/class/sahibinden.class.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="18" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
+            <state relative-caret-position="165">
+              <caret line="98" column="32" selection-start-line="98" selection-start-column="32" selection-end-line="98" selection-end-column="32" />
               <folding>
-                <element signature="n#Detay#0;n#Sahibinden#0;n#!!top" expanded="false" />
                 <element signature="n#replaceSpace#0;n#Sahibinden#0;n#!!top" expanded="false" />
-                <marker date="1487806679000" expanded="true" signature="4928:5085" ph="..." />
-                <marker date="1487806679000" expanded="true" signature="5914:6055" ph="..." />
-                <marker date="1487806679000" expanded="true" signature="5923:6055" ph="..." />
-                <marker date="1487806679000" expanded="true" signature="6422:6677" ph="..." />
-                <marker date="1487806679000" expanded="true" signature="6512:6677" ph="..." />
-                <marker date="1487806679000" expanded="true" signature="7100:7209" ph="..." />
-                <marker date="1487806679000" expanded="true" signature="7468:7604" ph="..." />
-                <marker date="1487806679000" expanded="true" signature="7759:7912" ph="..." />
-                <marker date="1487806679000" expanded="true" signature="7768:7912" ph="..." />
-                <marker date="1487806679000" expanded="true" signature="7790:7912" ph="..." />
               </folding>
             </state>
           </provider>
@@ -86,9 +71,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/index2.php" />
-        <option value="$PROJECT_DIR$/class/sahibinden.class.php" />
         <option value="$PROJECT_DIR$/index.php" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/class/sahibinden.class.php" />
       </list>
     </option>
   </component>
@@ -317,12 +302,12 @@
       <option name="presentableId" value="Default" />
       <updated>1487748992476</updated>
       <workItem from="1487748995377" duration="3279000" />
-      <workItem from="1487752592767" duration="21475000" />
+      <workItem from="1487752592767" duration="22043000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24754000" />
+    <option name="totallyTimeSpent" value="25322000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="831" extended-state="6" />
@@ -424,27 +409,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/class/sahibinden.class.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="18" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
-          <folding>
-            <element signature="n#Detay#0;n#Sahibinden#0;n#!!top" expanded="false" />
-            <element signature="n#replaceSpace#0;n#Sahibinden#0;n#!!top" expanded="false" />
-            <marker date="1487806679000" expanded="true" signature="4928:5085" ph="..." />
-            <marker date="1487806679000" expanded="true" signature="5914:6055" ph="..." />
-            <marker date="1487806679000" expanded="true" signature="5923:6055" ph="..." />
-            <marker date="1487806679000" expanded="true" signature="6422:6677" ph="..." />
-            <marker date="1487806679000" expanded="true" signature="6512:6677" ph="..." />
-            <marker date="1487806679000" expanded="true" signature="7100:7209" ph="..." />
-            <marker date="1487806679000" expanded="true" signature="7468:7604" ph="..." />
-            <marker date="1487806679000" expanded="true" signature="7759:7912" ph="..." />
-            <marker date="1487806679000" expanded="true" signature="7768:7912" ph="..." />
-            <marker date="1487806679000" expanded="true" signature="7790:7912" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -453,6 +417,16 @@
             <folding />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/class/sahibinden.class.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="98" column="32" selection-start-line="98" selection-start-column="32" selection-end-line="98" selection-end-column="32" />
+          <folding>
+            <element signature="n#replaceSpace#0;n#Sahibinden#0;n#!!top" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
