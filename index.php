@@ -20,7 +20,7 @@ require 'class/sahibinden.class.php';
 
 // kategori içerikleri
 
-print_r(Sahibinden::Liste('kiralik-daire',"0","json",));
+print_r(Sahibinden::Liste('kiralik-daire',"0"));
 //print_r(Sahibinden::Liste('emlak', 20)); // 2. sayfa
 
 
