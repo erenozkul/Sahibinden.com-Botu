@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a94b9a73-1460-4a44-a0db-d6ca867f90bf" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/class/sahibinden.class.php" afterPath="$PROJECT_DIR$/class/sahibinden.class.php" />
     </list>
     <ignored path="Sahibinden.com-Botu.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,11 +27,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="90">
+              <first_editor relative-caret-position="-180">
                 <caret line="6" column="24" selection-start-line="6" selection-start-column="24" selection-end-line="6" selection-end-column="24" />
                 <folding>
                   <marker date="1487940751000" expanded="true" signature="571:864" ph="//..." />
@@ -55,11 +54,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sahibinden.class.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="sahibinden.class.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/class/sahibinden.class.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="420">
+              <caret line="245" column="78" selection-start-line="245" selection-start-column="78" selection-end-line="245" selection-end-column="78" />
               <folding>
                 <element signature="n#TownCodes#0;n#Sahibinden#0;n#!!top" expanded="false" />
               </folding>
@@ -95,10 +94,10 @@
         <option value="$PROJECT_DIR$/ilce.php" />
         <option value="$PROJECT_DIR$/ilce.json" />
         <option value="$PROJECT_DIR$/usage.php" />
-        <option value="$PROJECT_DIR$/class/sahibinden.class.php" />
         <option value="$PROJECT_DIR$/index.php" />
         <option value="$PROJECT_DIR$/ilce.html" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/class/sahibinden.class.php" />
       </list>
     </option>
   </component>
@@ -320,12 +319,12 @@
       <option name="presentableId" value="Default" />
       <updated>1487748992476</updated>
       <workItem from="1487748995377" duration="3279000" />
-      <workItem from="1487752592767" duration="49731000" />
+      <workItem from="1487752592767" duration="50003000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="53010000" />
+    <option name="totallyTimeSpent" value="53282000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -490,16 +489,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/class/sahibinden.class.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#TownCodes#0;n#Sahibinden#0;n#!!top" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ilce.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-5280">
@@ -527,7 +516,7 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="90">
+          <first_editor relative-caret-position="-180">
             <caret line="6" column="24" selection-start-line="6" selection-start-column="24" selection-end-line="6" selection-end-column="24" />
             <folding>
               <marker date="1487940751000" expanded="true" signature="571:864" ph="//..." />
@@ -536,6 +525,16 @@
             </folding>
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/class/sahibinden.class.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="245" column="78" selection-start-line="245" selection-start-column="78" selection-end-line="245" selection-end-column="78" />
+          <folding>
+            <element signature="n#TownCodes#0;n#Sahibinden#0;n#!!top" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

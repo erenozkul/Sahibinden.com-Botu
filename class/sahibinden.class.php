@@ -238,7 +238,7 @@ class Sahibinden
                 "breadCrumb" => $breadArray,
                 "address" => array("city" => trim($address[0]->plaintext),"town" => trim($address[1]->plaintext),"district" => trim($address[2]->plaintext)),
                 "price" => trim(str_replace($priceTrim->plaintext,"",$price->plaintext)),
-                "seller" => array("name"=>trim(@$sellerName->plaintext),"store_link" =>self::$baseUrl.@trim(str_replace(self::$baseUrl,"",$sellerStore->href)),"image"=>@$sellerImg->src,"phones" => @$phoneArray),
+                "seller" => array("name"=>trim(@$sellerName->plaintext),"store_link" =>$sellerStore->href,"image"=>@$sellerImg->src,"phones" => @$phoneArray),
                 "coordinates" => array("latitude"=>trim(@$map->attr["data-lat"]),"longitude" =>trim(@$map->attr["data-lon"]) ),
                 "info" => $infoArray,
                 "properties" =>$propertyArray,
