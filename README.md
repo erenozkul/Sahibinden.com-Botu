@@ -2,9 +2,9 @@ Hakkında
 ====================
 
 Sahibinden.com için @tayfunerbilen 'in eskiden hazırlamış olduğu bot'u güncel hale getirdim. Ve yeni özellikler eklemeye devam edeceğim. 
-Şuan güzel bir şekilde, kategorileri alt kategorileri vs. kategori listelerini  çekmektedir.
+Şuan güzel bir şekilde; kategorileri, alt kategorileri, kategori listelerini ve detayları çekmektedir.
 
-Dilediğiniz 3 formatta return alabilirsiniz;
+3 formattan dilediğinizi döndürebilirsiniz.
 
 -json
 -array

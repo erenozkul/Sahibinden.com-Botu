@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a94b9a73-1460-4a44-a0db-d6ca867f90bf" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ilce.html" afterPath="$PROJECT_DIR$/ilce.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <ignored path="Sahibinden.com-Botu.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,16 +28,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="255">
-                <caret line="17" column="39" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
+              <first_editor relative-caret-position="90">
+                <caret line="6" column="24" selection-start-line="6" selection-start-column="24" selection-end-line="6" selection-end-column="24" />
                 <folding>
-                  <marker date="1487940051000" expanded="true" signature="562:855" ph="//..." />
-                  <marker date="1487940051000" expanded="true" signature="874:1456" ph="..." />
-                  <marker date="1487940051000" expanded="true" signature="1460:1943" ph="//..." />
+                  <marker date="1487940751000" expanded="true" signature="571:864" ph="//..." />
+                  <marker date="1487940751000" expanded="true" signature="883:1465" ph="..." />
+                  <marker date="1487940751000" expanded="true" signature="1469:1952" ph="//..." />
                 </folding>
               </first_editor>
               <second_editor />
@@ -49,26 +50,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ilce.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ilce.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85005">
-              <caret line="5977" column="20" selection-start-line="5977" selection-start-column="20" selection-end-line="5977" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ilce.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ilce.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5280">
-              <caret line="0" column="4" selection-start-line="0" selection-start-column="4" selection-end-line="0" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -116,8 +97,8 @@
         <option value="$PROJECT_DIR$/usage.php" />
         <option value="$PROJECT_DIR$/class/sahibinden.class.php" />
         <option value="$PROJECT_DIR$/index.php" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/ilce.html" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -244,20 +225,6 @@
               <option name="myItemType" value="" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="Sahibinden.com-Botu">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="class">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="Scratches" />
@@ -353,12 +320,12 @@
       <option name="presentableId" value="Default" />
       <updated>1487748992476</updated>
       <workItem from="1487748995377" duration="3279000" />
-      <workItem from="1487752592767" duration="49529000" />
+      <workItem from="1487752592767" duration="49731000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="52808000" />
+    <option name="totallyTimeSpent" value="53010000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -377,7 +344,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959327" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959327" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959327" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32959327" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -434,9 +401,9 @@
           <first_editor relative-caret-position="0">
             <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
             <folding>
-              <marker date="1487940051000" expanded="true" signature="562:855" ph="//..." />
-              <marker date="1487940051000" expanded="true" signature="874:1456" ph="..." />
-              <marker date="1487940051000" expanded="true" signature="1460:1943" ph="//..." />
+              <marker date="1487940751000" expanded="true" signature="571:864" ph="//..." />
+              <marker date="1487940751000" expanded="true" signature="883:1465" ph="..." />
+              <marker date="1487940751000" expanded="true" signature="1469:1952" ph="//..." />
             </folding>
           </first_editor>
           <second_editor />
@@ -507,14 +474,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ilce.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85005">
-          <caret line="5977" column="20" selection-start-line="5977" selection-start-column="20" selection-end-line="5977" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/class/simple_html_dom.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
@@ -528,29 +487,6 @@
         <state relative-caret-position="571">
           <caret line="49" column="104" selection-start-line="0" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="255">
-            <caret line="17" column="39" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
-            <folding>
-              <marker date="1487940051000" expanded="true" signature="562:855" ph="//..." />
-              <marker date="1487940051000" expanded="true" signature="874:1456" ph="..." />
-              <marker date="1487940051000" expanded="true" signature="1460:1943" ph="//..." />
-            </folding>
-          </first_editor>
-          <second_editor />
         </state>
       </provider>
     </entry>
@@ -569,6 +505,37 @@
         <state relative-caret-position="-5280">
           <caret line="0" column="4" selection-start-line="0" selection-start-column="4" selection-end-line="0" selection-end-column="4" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ilce.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85005">
+          <caret line="5977" column="20" selection-start-line="5977" selection-start-column="20" selection-end-line="5977" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="90">
+            <caret line="6" column="24" selection-start-line="6" selection-start-column="24" selection-end-line="6" selection-end-column="24" />
+            <folding>
+              <marker date="1487940751000" expanded="true" signature="571:864" ph="//..." />
+              <marker date="1487940751000" expanded="true" signature="883:1465" ph="..." />
+              <marker date="1487940751000" expanded="true" signature="1469:1952" ph="//..." />
+            </folding>
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
