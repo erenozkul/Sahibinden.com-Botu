@@ -28,21 +28,32 @@ class Sahibinden
         if (empty($url)) {
             $open = self::Curl(self::$baseUrl);
             $items = str_get_html($open)->find("ul.categories-left-menu", 0)->find("li a[title]");
-            foreach ($items as $element) {
-                self::$data[] = array("title" => trim($element->plaintext),
-                    "uri" => trim($element->href),
-                    "url" => self::$baseUrl . trim($element->href)
-                );
+            if(count($items) > 0) {
+                foreach ($items as $element) {
+                    self::$data[] = array("title" => trim($element->plaintext),
+                        "uri" => trim($element->href),
+                        "url" => self::$baseUrl . trim($element->href)
+                    );
+
+                }
+            }else{
+                self::$data[] = array("error" => true, "url" => self::$baseUrl,"message" => "Sonuç Bulunamadı.");
 
             }
         } else {
-            $open = self::Curl(self::$baseUrl . '/kategori/' . $url);
+            $link = self::$baseUrl . '/kategori/' . $url;
+            $open = self::Curl($link);
             $items = str_get_html($open)->find("ul.categoryList", 0)->find("li a");
-            foreach ($items as $element) {
-                self::$data[] = array("title" => trim($element->plaintext),
-                    "uri" => trim($element->href),
-                    "url" => self::$baseUrl . trim($element->href)
-                );
+            if (count($items) > 0) {
+                foreach ($items as $element) {
+                    self::$data[] = array("title" => trim($element->plaintext),
+                        "uri" => trim($element->href),
+                        "url" => self::$baseUrl . trim($element->href)
+                    );
+                }
+            } else {
+                self::$data[] = array("error" => true, "url" => $link,"message" => "Sonuç Bulunamadı.");
+
             }
 
         }
@@ -67,40 +78,70 @@ class Sahibinden
      * @param string $type
      * @return json,array,xml
      */
-    static function Liste($kategoriLink, $sayfa = '0', $type = "json")
+    static function Liste($kategoriLink, $itemCount = 20, $filters, $type = "json")
     {
 
-        $page = '?pagingOffset=' . $sayfa;
-        $open = self::Curl(self::$baseUrl . "/" . $kategoriLink . $page);
+        $filterText = "";
+        foreach ($filters as $key => $val) {
+            $filterText .= "&" . $key . "=" . $val;
+        }
 
-        $links = str_get_html($open)->find("td.searchResultsSmallThumbnail a");
-        $images = str_get_html($open)->find("td.searchResultsSmallThumbnail a img");
-        $prices = str_get_html($open)->find("td.searchResultsPriceValue div");
-        $dates = str_get_html($open)->find("td.searchResultsDateValue");
-        $addresses = str_get_html($open)->find("td.searchResultsLocationValue");
 
-        foreach ($links as $link) {
-            $linkArray[] = array("link" => self::$baseUrl . trim($link->href));
-        }
-        foreach ($images as $image) {
-            $imageArray[] = array("image" => trim($image->src));
-            $titleArray[] = array("title" => trim($image->title));
-        }
-        foreach ($prices as $price) {
-            $priceArray[] = array("price" => trim($price->plaintext));
-        }
-        foreach ($dates as $date) {
-            $dateArray[] = array("date" => str_replace("<br>", "", str_replace("</span>", "", str_replace("<span>", "", trim($date->plaintext)))));
-        }
-        foreach ($addresses as $address) {
-            $addressArray[] = array("address" => str_replace("<br>", "", trim($address->plaintext)));
-        }
-        if (count(@$linkArray) > 0) {
-            for ($i = 0; $i <= count($linkArray); $i++) {
-                self::$data[] = @array_merge($linkArray[$i], $titleArray[$i], $imageArray[$i], $priceArray[$i], $dateArray[$i], $addressArray[$i]);
-            }
+        if ($itemCount > 20) {
+            $pageCount = ceil($itemCount / 20);
         } else {
-            self::$data = array("error"=> true,"message"=>"Sonuç Bulunamadı.");
+            $pageCount = 1;
+        }
+        for ($p = 0; $p <= $pageCount - 1; $p++) {
+            $page = $p * 20;
+
+            $pageFilter = '?pagingOffset=' . $page;
+            $url = self::$baseUrl . "/" . $kategoriLink . $pageFilter . $filterText;
+            $open = self::Curl($url);
+
+            $links = str_get_html($open)->find("td.searchResultsSmallThumbnail a");
+            $images = str_get_html($open)->find("td.searchResultsSmallThumbnail a img");
+            $prices = @str_get_html($open)->find("td.searchResultsPriceValue div");
+            $dates = str_get_html($open)->find("td.searchResultsDateValue");
+            $addresses = str_get_html($open)->find("td.searchResultsLocationValue");
+            $resultText = str_get_html($open)->find("div.infoSearchResults div.result-text", 0)->plaintext;
+            $resultCount = str_get_html($open)->find("div.infoSearchResults div.result-text span", 1)->plaintext;
+
+            foreach ($links as $link) {
+                $linkArray[] = array("link" => self::$baseUrl . trim($link->href));
+                $uriArray[] = array("uri" => trim($link->href));
+            }
+            foreach ($images as $image) {
+                $thumbArray[] = array("thumb" => trim($image->src));
+                $imageArray[] = array("image" => str_replace("thmb_", "", trim($image->src)));
+                $titleArray[] = array("title" => trim(explode("#",$image->alt)[0]));
+                $idArray[] = array("id" => trim(explode("#",$image->alt)[1]));
+            }
+            foreach (@$prices as $price) {
+                $priceArray[] = array("price" => trim($price->plaintext));
+            }
+            foreach ($dates as $date) {
+                $dateArray[] = array("date" => str_replace("<br>", "", str_replace("</span>", "", str_replace("<span>", "", trim($date->plaintext)))));
+            }
+            foreach ($addresses as $address) {
+                $addressArray[] = array("address" => str_replace("<br>", "", trim($address->plaintext)));
+            }
+
+
+        }
+
+        if (count(@$linkArray) > 0) {
+            self::$data["properties"] = array("count" => count($linkArray),
+                "resultText" => str_replace('"', "'", $resultText),
+                "resultCount" => intval(str_replace(".", "", str_replace(' ilan ', "", $resultCount))),
+                "filters" => $filters,
+                "url" => str_replace("pagingOffset=" . $page, "", $url));
+            for ($i = 0; $i <= $itemCount - 1; $i++) {
+                self::$data["results"][] = @array_merge($idArray[$i], $linkArray[$i], $uriArray[$i], $titleArray[$i], $thumbArray[$i], $imageArray[$i], $priceArray[$i], $dateArray[$i], $addressArray[$i]);
+            }
+
+        } else {
+            self::$data[] = array("error" => true, "url" => $url,"message" => "Sonuç Bulunamadı.");
         }
 
 
@@ -124,95 +165,156 @@ class Sahibinden
      * @param null $url
      * @return array
      */
-    static function Detay($url = NULL)
+    static function Detay($uri = NULL,$type = "json")
     {
-        if ($url != NULL) {
-
+        $url = self::$baseUrl.$uri;
+        if($uri != NULL){
             $open = self::Curl($url);
 
-            // title
-            preg_match_all('/<div class="classifiedDetailTitle">    <h1>(.*?)<\/h1>/', $open, $titles);
-            $title = $titles[1][0];
+            $title = str_get_html($open)->find("div.classifiedDetailTitle h1",0);
+            $breadCrumb = str_get_html($open)->find("div.classifiedBreadCrumb ul li");
+            $address = str_get_html($open)->find("div.classifiedInfo h2",0)->find("a");
+            $images = str_get_html($open)->find("ul.classifiedDetailThumbListPages img");
+            $movies = str_get_html($open)->find("source#mp4");
+            $infoListFields = str_get_html($open)->find("ul.classifiedInfoList li strong");
+            $infoListTexts = str_get_html($open)->find("ul.classifiedInfoList li span");
+            $price = str_get_html($open)->find("div.classifiedInfo h3",0);
+            $priceTrim = str_get_html($open)->find("div.classifiedInfo h3 a",0);
+            $description = str_get_html($open)->find("div.classifiedDescription",0);
+            $sellerName = str_get_html($open)->find("div.classifiedUserContent h5",0);
+            $sellerStore= str_get_html($open)->find("a.userClassifieds",0);
+            $sellerImg = str_get_html($open)->find("div.classifiedUserContent a img",0);
+            $sellerPhoneFields = str_get_html($open)->find("ul#phoneInfoPart li strong");
+            $sellerPhoneText = str_get_html($open)->find("ul#phoneInfoPart li span.pretty-phone-part");
+            $map = str_get_html($open)->find("div#gmap",0);
+            $propertyTitles = str_get_html($open)->find("div#classified-detail",0)->find("div.uiBox",1)->find("div.classifiedDescription",0)->find("h3");
+            $propertyCount = str_get_html($open)->find("div#classified-detail",0)->find("div.uiBox",1)->find("div.classifiedDescription",0)->find("ul");
 
-            // images
-            preg_match_all('/<li>                        <img src="(.*?)" data-source="(.*?)" alt="(.*?)"\/>                    <\/li>/', $open, $imgs);
-            foreach ($imgs[1] as $index => $val) {
-                $images[] = array(
-                    'thumb' => $val,
-                    'big' => $imgs[2][$index]
-                );
-            }
+            if(count($propertyCount)>0){
+                for($p=0; $p<=count($propertyCount)-1; $p++){
+                    $propertyDetails = str_get_html($open)->find("div#classified-detail",0)->find("div.uiBox",1)->find("div.classifiedDescription",0)->find("ul",$p)->find("li.selected");
+                    $ppDetails = array();
+                    if(count($propertyDetails)>0){
+                        for($d=0; $d<=count($propertyDetails)-1; $d++){
+                            $ppDetails[] = trim($propertyDetails[$d]->plaintext);
+                        }
+                    }
 
-            // açıklama
-            preg_match_all('/<div id="classifiedDescription" class="uiBoxContainer">(.*?)<\/div>/', $open, $desc);
-            $description = array(
-                'html' => self::replaceSpace($desc[1][0]),
-                'no_html' => self::replaceSpace(strip_tags($desc[1][0]))
-            );
-
-            // genel özellikler
-            preg_match_all('/<ul class="classifiedInfoList">(.*?)<\/ul>/', $open, $propertie);
-            $prop = self::replaceSpace($propertie[1][0]);
-            preg_match_all('/<li> <strong>(.*?)<\/strong>(.*?)<span(.*?)>(.*?)<\/span> <\/li>/', $prop, $p);
-            foreach ($p[1] as $index => $val) {
-                $properties[trim($val)] = str_replace('&nbsp;', '', trim($p[4][$index]));
-            }
-
-            // tüm özellikleri
-            preg_match('/<div class="uiBoxContainer classifiedDescription" id="classifiedProperties">(.*?)<\/div>/', $open, $allProperties);
-            $allPropertiesString = self::replaceSpace($allProperties[1]);
-            preg_match_all('/<h3>(.*?)<\/h3>/', $allPropertiesString, $propertiesTitles);
-            preg_match_all('/<ul>(.*?)<\/ul>/', $allPropertiesString, $propertiesResults);
-            foreach ($propertiesResults[1] as $index => $val) {
-                preg_match_all('/<li class="(.*?)">(.*?)<\/li>/', $val, $result);
-                foreach ($result[1] as $index2 => $selected) {
-                    $props[$propertiesTitles[1][$index]][] = array($result[2][$index2], $selected);
+                    $propertyArray[] = array(trim($propertyTitles[$p]->plaintext) => $ppDetails);
                 }
             }
-
-            // price
-            preg_match('/<div class="classifiedInfo">(.*?)<\/div>/', $open, $extra);
-            $extras = self::replaceSpace($extra[1]);
-            preg_match('/<h3>(.*?)<\/h3>/', $extras, $price);
-            $price = trim($price[1]);
-
-            preg_match_all('/<a href="(.*?)">(.*?)<\/a>/', $extras, $addrs);
-            $address = array(
-                'il' => $addrs[2][0],
-                'ilce' => $addrs[2][1],
-                'mahalle' => $addrs[2][2]
-            );
-
-            // username
-            preg_match('/<h5>(.*?)<\/h5>/', $open, $username);
-            $username = $username[1];
-
-            // contact info
-            preg_match('/<ul class="userContactInfo">(.*?)<\/ul>/', $open, $contact_info);
-            $contact_info = self::replaceSpace($contact_info[1]);
-            preg_match_all('/<li> <strong>(.*?)<\/strong> <span>(.*?)<\/span> <\/li>/', $contact_info, $contact);
-
-            foreach ($contact[2] as $index => $val) {
-                $contacts[$contact[1][$index]] = $val;
+            if(count($sellerPhoneFields)>0){
+                for($f=0; $f<=count($sellerPhoneFields)-1; $f++){
+                    $phoneArray[] = array("title"=>trim($sellerPhoneFields[$f]->plaintext),"text" => trim($sellerPhoneText[$f]->plaintext));
+                }
             }
-            $data = array(
-                'title' => $title,
-                'images' => $images,
-                'address' => $address,
-                'description' => $description,
-                'properties' => $properties,
-                'all_properties' => $props,
-                'price' => $price,
-                'user' => array(
-                    'name' => $username,
-                    'contact' => $contacts
-                )
-            );
+            if(count($infoListFields)>0){
+                for($f=0; $f<=count($infoListFields)-1; $f++){
+                    $infoArray[] = array("title" => trim($infoListFields[$f]->plaintext),"text" => trim($infoListTexts[$f]->plaintext));
+                }
+            }
+            if(count($breadCrumb)>0){
+                foreach ($breadCrumb as $bc){
+                    $breadArray[] = trim($bc->plaintext);
+                }
+            }
+            if(count($images) > 0) {
+                foreach ($images as $img) {
+                    $thumbArray[]=$img->src;
+                    $imageArray[]=str_replace("thmb_","",$img->src);
+                    $megaArray[]=str_replace("thmb_","x16_",$img->src);
 
-            return $data;
+                }
+            }
+            if(count($movies)>0){
+                foreach ($movies as $movie) {
+                    $movieArray[] = $movie->src;
+                    }
+            }
+
+            self::$data = array(
+                "url" => $url,
+                "title" => $title->plaintext,
+                "breadCrumb" => $breadArray,
+                "address" => array("city" => trim($address[0]->plaintext),"town" => trim($address[1]->plaintext),"district" => trim($address[2]->plaintext)),
+                "price" => trim(str_replace($priceTrim->plaintext,"",$price->plaintext)),
+                "seller" => array("name"=>trim(@$sellerName->plaintext),"store_link" =>self::$baseUrl.@trim(str_replace(self::$baseUrl,"",$sellerStore->href)),"image"=>@$sellerImg->src,"phones" => @$phoneArray),
+                "coordinates" => array("latitude"=>trim(@$map->attr["data-lat"]),"longitude" =>trim(@$map->attr["data-lon"]) ),
+                "info" => $infoArray,
+                "properties" =>$propertyArray,
+                "description"=> $description->plaintext,
+                "description_base64"=> base64_encode($description->plaintext),
+                "thumbs" => $thumbArray,
+                "images" => $imageArray,
+                "mega_images"=> @$megaArray,
+                "movies"=>@$movieArray);
+
+
+        }else{
+            self::$data[] = array("error" => true, "url" => $url,"message" => "Sonuç Bulunamadı.");
+        }
+
+        if ($type == "json" or empty($type)) {
+            return json_encode(self::$data);
+        } else if ($type == "array") {
+            return self::$data;
+        } else if ($type == "xml") {
+            $xml = new SimpleXMLElement('<?xml version="1.0"?><root></root>');
+            self::array_to_xml(self::$data, $xml);
+            return $xml->asXML();
 
         }
+
+
     }
+
+    /**
+     * Sahibinden.com Filtrelemelerine uygun il içe isimleri ve kodlarını döndürür
+     *
+     * @param $il //Plaka Kodu
+     * @param $type //Dönecek veri formatı
+     * @return  JSON,XML,Array
+     */
+    static function TownCodes($il = NULL, $type = "json")
+    {
+        /* ilce.html den gelen veri ilce.json a bu şekilde aktarıldı.
+        $data = file_get_html("ilce.html")->find("li");
+        foreach ($data as $e) {
+            self::$data[$e->attr["data-parentid"]][] = array(
+                "il-id" => $e->attr["data-parentid"],
+                "il-adi" => $e->attr["data-parentlabel"],
+                "ilce-id" => $e->attr["data-id"],
+                "ilce-adi" => $e->plaintext);
+        }
+        */
+        $ilceJson = json_decode(file_get_contents("ilce.json"), true);
+        if ($type == "json") {
+            if ($il != NULL) {
+                return json_encode($ilceJson[$il]);
+            } else {
+                return json_encode($ilceJson);
+            }
+        } else if ($type == "array") {
+            if ($il != NULL) {
+                return $ilceJson[$il];
+            } else {
+                return $ilceJson;
+            }
+        } else if ($type == "xml") {
+            if ($il != NULL) {
+                $xml = new SimpleXMLElement('<?xml version="1.0"?><root></root>');
+                self::array_to_xml($ilceJson[$il], $xml);
+                return $xml->asXML();
+            } else {
+                $xml = new SimpleXMLElement('<?xml version="1.0"?><root></root>');
+                self::array_to_xml($ilceJson, $xml);
+                return $xml->asXML();
+            }
+        }
+
+
+    }
+
     /**
      * Gereksiz boşlukları temizler.
      *
