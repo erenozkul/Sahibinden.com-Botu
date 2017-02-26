@@ -57,16 +57,9 @@ class Sahibinden
             }
 
         }
-        if ($type == "json" or empty($type)) {
-            return json_encode(self::$data);
-        } else if ($type == "array") {
-            return self::$data;
-        } else if ($type == "xml") {
-            $xml = new SimpleXMLElement('<?xml version="1.0"?><root></root>');
-            self::array_to_xml(self::$data, $xml);
-            return $xml->asXML();
 
-        }
+
+        return self::ReturnWithTypes($type);
 
     }
 
@@ -144,17 +137,7 @@ class Sahibinden
             self::$data[] = array("error" => true, "url" => $url,"message" => "Sonuç Bulunamadı.");
         }
 
-
-        if ($type == "json" or empty($type)) {
-            return json_encode(self::$data);
-        } else if ($type == "array") {
-            return self::$data;
-        } else if ($type == "xml") {
-            $xml = new SimpleXMLElement('<?xml version="1.0"?><root></root>');
-            self::array_to_xml(self::$data, $xml);
-            return $xml->asXML();
-
-        }
+        return self::ReturnWithTypes($type);
 
     }
 
@@ -254,17 +237,8 @@ class Sahibinden
             self::$data[] = array("error" => true, "url" => $url,"message" => "Sonuç Bulunamadı.");
         }
 
-        if ($type == "json" or empty($type)) {
-            return json_encode(self::$data);
-        } else if ($type == "array") {
-            return self::$data;
-        } else if ($type == "xml") {
-            $xml = new SimpleXMLElement('<?xml version="1.0"?><root></root>');
-            self::array_to_xml(self::$data, $xml);
-            return $xml->asXML();
 
-        }
-
+            return self::ReturnWithTypes($type);
 
     }
 
@@ -315,6 +289,20 @@ class Sahibinden
 
     }
 
+
+
+    static function ReturnWithTypes($type="json"){
+
+        if ($type == "json" or empty($type)) {
+            return json_encode(self::$data);
+        } else if ($type == "array") {
+            return self::$data;
+        } else if ($type == "xml") {
+            $xml = new SimpleXMLElement('<?xml version="1.0"?><root></root>');
+            self::array_to_xml(self::$data, $xml);
+            return $xml->asXML();
+        }
+    }
     /**
      * Gereksiz boşlukları temizler.
      *
