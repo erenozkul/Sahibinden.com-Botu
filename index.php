@@ -37,7 +37,7 @@ require 'class/sahibinden.class.php';
  );
 
 //print_r(Sahibinden::Liste('kiralik',40,$filters,"array")); // Kiralık Ev Kategorisinden filtrelere uygun 40 kaydı array formatında döndürür
-//echo Sahibinden::Liste('kiralik-daire',20,$filters); //Emlak Kategorisinden 20 Kaydı JSON formatında döndürür.
+//echo Sahibinden::Liste('kiralik-daire'); //Emlak Kategorisinden 20 Kaydı JSON formatında döndürür.
 
 //İl ve İlçe Kodları (Filtreleme için)
 //@return xml,json,array
@@ -53,15 +53,15 @@ require 'class/sahibinden.class.php';
 
 //Mağaza Kategorilerini Alt Kategoriyle birlikte
 //print_r(Sahibinden::MagazaKategori("remaxpiramit",NULL,"array"));
-//echo Sahibinden::MagazaKategori("remaxpiramit","emlak-konut");
+//echo Sahibinden::MagazaKategori("remaxpiramit");
 
 
 
 //Mağaza İlan Listesi
 $filters = array(
-    "userId" => "57127"
+    "userId" => "57127" //Birden fazla seçilemez
 );
-//echo Sahibinden::MagazaListe("remaxpiramit",20,$filters);
+//echo Sahibinden::MagazaListe("remaxpiramit",21);
 
 //Mağaza Danışman Listesi
 

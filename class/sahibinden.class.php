@@ -294,6 +294,7 @@ class Sahibinden
         } else {
             $pageCount = 1;
         }
+        $ic = 0;
         for ($p = 0; $p <= $pageCount - 1; $p++) {
             $page = $p * 20;
             $pageFilter = '?pagingOffset=' . $page;
@@ -304,34 +305,40 @@ class Sahibinden
             $tr = str_get_html($open)->find("div.classified-list table tbody tr");
             $colCount = count($columns);
             if (count($tr) > 0) {
+
                 for ($j = 1; $j <= count($tr) - 1; $j++) {
-                    $d = array();
+                    if ($ic == $itemCount) {
+                        continue;
+                    } else {
+                        $d = array();
 
-                    $href = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", 0)->find("a", 0);
-                    $img = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", 0)->find("a", 0)->find("img", 0);
-                    $baslik = explode("#", $img->alt);
-                    $d["id"] = $baslik[1];
-                    $d["title"] = trim($baslik[0]);
-                    $d["link"] = $href->href;
-                    $d["image"] = $img->src;
+                        $href = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", 0)->find("a", 0);
+                        $img = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", 0)->find("a", 0)->find("img", 0);
+                        $baslik = explode("#", $img->alt);
+                        $d["id"] = $baslik[1];
+                        $d["title"] = trim($baslik[0]);
+                        $d["link"] = $href->href;
+                        $d["image"] = $img->src;
 
-                    $imgExp = explode("/", $img->src);
-                    $thmb = "thmb_" . end($imgExp);
-                    array_pop($imgExp);
-                    array_push($imgExp, $thmb);
-                    $thumb = implode("/", $imgExp);
-                    $d["thumb"] = $thumb;
+                        $imgExp = explode("/", $img->src);
+                        $thmb = "thmb_" . end($imgExp);
+                        array_pop($imgExp);
+                        array_push($imgExp, $thmb);
+                        $thumb = implode("/", $imgExp);
+                        $d["thumb"] = $thumb;
 
-                    for ($x = 0; $x <= $colCount - 1; $x++) {
-                        $row = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", $x);
-                        if (!empty(trim($columns[$x]->plaintext))) {
-                            $title = self::turkishChars(strtolower(trim($columns[$x]->plaintext)));
-                            $d[$title] = trim($row->plaintext);
+                        for ($x = 0; $x <= $colCount - 1; $x++) {
+                            $row = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", $x);
+                            if (!empty(trim($columns[$x]->plaintext))) {
+                                $title = self::turkishChars(strtolower(trim($columns[$x]->plaintext)));
+                                $d[$title] = trim($row->plaintext);
+                            }
                         }
+
+
+                        self::$data[] = $d;
+                        $ic++;
                     }
-
-
-                    self::$data[] = $d;
                 }
             } else {
                 self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
