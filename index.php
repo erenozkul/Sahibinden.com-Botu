@@ -25,10 +25,10 @@ require 'class/sahibinden.class.php';
 //@return xml,json,array
  $filters = array(
      "date" => "1days", //1,3,7,15,30  //1 günlük ilanlar
-     "address_city" => "34", //il plaka kodu
+     "address_city" => array("34","22"), //il plaka kodu
      "address_town" => "71",  //ilçe kodu
      "price_currency" => "1", //1=TL, 2=USD, 3=EUR, 4=GBP  //para birimi
-     "price_min" => "0", //minimum fiyat
+     "price_min" => "5000", //minimum fiyat
      "price_max" => "12000", //maximum fiyat
      "hasVideo" => "false", //videolu ilanlar
      "hasPhoto" => "true",  //fotoğrafı olan ilanlar
@@ -37,7 +37,7 @@ require 'class/sahibinden.class.php';
  );
 
 //print_r(Sahibinden::Liste('kiralik',40,$filters,"array")); // Kiralık Ev Kategorisinden filtrelere uygun 40 kaydı array formatında döndürür
-//echo Sahibinden::Liste('emlak'); //Emlak Kategorisinden 20 Kaydı JSON formatında döndürür.
+//echo Sahibinden::Liste('kiralik-daire',20,$filters); //Emlak Kategorisinden 20 Kaydı JSON formatında döndürür.
 
 //İl ve İlçe Kodları (Filtreleme için)
 //@return xml,json,array

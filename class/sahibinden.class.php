@@ -80,7 +80,14 @@ class Sahibinden
         $filterText = "";
         if (is_array($filters)) {
             foreach ($filters as $key => $val) {
-                $filterText .= "&" . $key . "=" . $val;
+                if(is_array($filters[$key])){
+                    foreach ($filters[$key] as $v){
+                        $filterText .= "&" . $key . "=" . $v;
+                    }
+                }else {
+                    $filterText .= "&" . $key . "=" . $val;
+                }
+
             }
         }
 
@@ -90,6 +97,7 @@ class Sahibinden
         } else {
             $pageCount = 1;
         }
+
         for ($p = 0; $p <= $pageCount - 1; $p++) {
             $page = $p * 20;
 
@@ -269,7 +277,14 @@ class Sahibinden
         $filterText = "";
         if (is_array($filters)) {
             foreach ($filters as $key => $val) {
-                $filterText .= "&" . $key . "=" . $val;
+                if(is_array($filters[$key])){
+                    foreach ($filters[$key] as $v){
+                        $filterText .= "&" . $key . "=" . $v;
+                    }
+                }else {
+                    $filterText .= "&" . $key . "=" . $val;
+                }
+
             }
         }
 
@@ -710,6 +725,7 @@ class Sahibinden
             CURLOPT_HEADER => false,
             CURLOPT_ENCODING => "",
             CURLOPT_AUTOREFERER => true,
+            CURLOPT_FOLLOWLOCATION =>true,
             CURLOPT_CONNECTTIMEOUT => 30,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_MAXREDIRS => 10,
@@ -722,14 +738,20 @@ class Sahibinden
         $err = curl_errno($ch);
         $errmsg = curl_error($ch);
         $header = curl_getinfo($ch);
-
+        $redirectURL = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL );
         curl_close($ch);
 
         $header['errno'] = $err;
         $header['errmsg'] = $errmsg;
+        $header['redirect'] = $redirectURL;
         $header['content'] = $content;
+        if(empty($errmsg)) {
 
-        return str_replace(array("\n", "\r", "\t"), NULL, $header['content']);
+            return str_replace(array("\n", "\r", "\t"), NULL, $header['content']);
+        }
+        else{
+            return $err.":".$errmsg;
+        }
     }
 
     /**
