@@ -7,6 +7,7 @@
 header('Content-type: text/html; charset=utf8');
 require 'class/sahibinden.class.php';
 
+
 //Ana Kategoriler
 //@return xml,json,array
 
@@ -47,5 +48,26 @@ require 'class/sahibinden.class.php';
 
 //İlan Detayı
 
-echo Sahibinden::Detay("/ilan/vasita-otomobil-lotus-lotus-cars-turkey-elise-20th-edition-398612300/detay","json");
+//echo Sahibinden::Detay("/ilan/vasita-otomobil-lotus-lotus-cars-turkey-elise-20th-edition-398612300/detay","json");
+
+
+//Mağaza Kategorilerini Alt Kategoriyle birlikte
+//print_r(Sahibinden::MagazaKategori("remaxpiramit",NULL,"array"));
+//echo Sahibinden::MagazaKategori("remaxpiramit","emlak-konut");
+
+
+
+//Mağaza İlan Listesi
+$filters = array(
+    "userId" => "57127"
+);
+//echo Sahibinden::MagazaListe("remaxpiramit",20,$filters);
+
+//Mağaza Danışman Listesi
+
+//echo Sahibinden::MagazaDanismanlari("remaxpiramit","json");
+
+
+
+
 

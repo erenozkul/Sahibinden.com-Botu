@@ -11,6 +11,7 @@ require_once "simple_html_dom.php";
 class Sahibinden
 {
     static $baseUrl = "https://www.sahibinden.com";
+    static $storeEndUrl = ".sahibinden.com";
     static $data = array();
 
 
@@ -67,17 +68,20 @@ class Sahibinden
     /**
      * Kategoriye ait ilanları listeler.
      *
-     * @param $kategoriLink
-     * @param string $sayfa
+     * @param string $kategoriLink
+     * @param int $itemCount
+     * @param array $filters
      * @param string $type
      * @return json,array,xml
      */
-    static function Liste($kategoriLink, $itemCount = 20, $filters, $type = "json")
+    static function Liste($kategoriLink, $itemCount = 20, $filters = NULL, $type = "json")
     {
         self::$data = array();
         $filterText = "";
-        foreach ($filters as $key => $val) {
-            $filterText .= "&" . $key . "=" . $val;
+        if (is_array($filters)) {
+            foreach ($filters as $key => $val) {
+                $filterText .= "&" . $key . "=" . $val;
+            }
         }
 
 
@@ -178,6 +182,189 @@ class Sahibinden
             self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
         }
 
+
+        return self::ReturnWithTypes($type);
+
+    }
+
+
+    /**
+     * Mağazaya ait ana ve alt Kategorileri listelemek için kullanılır
+     *
+     * @param null $url
+     * @param array ,json,xml $type
+     * @return json,array,xml
+     * @return default = json
+     */
+    static function MagazaKategori($storeName, $kategori = NULL, $type = "json")
+    {
+        if (!empty($storeName)) {
+            if ($kategori == NULL) {
+                $url = "https://" . $storeName . self::$storeEndUrl;
+            } else {
+                $url = "https://" . $storeName . self::$storeEndUrl . "/" . $kategori;
+            }
+            $open = self::Curl($url);
+
+            for($x=0; $x<=10; $x++) {
+                $ul = str_get_html($open)->find("div.categories ul li.level".$x);
+                foreach ($ul as $u) {
+                    $categories = $u->find("a");
+                    foreach ($categories as $c) {
+                        $uri = explode("?", str_replace("/", "", $c->href));
+                       $cats = array(
+                            "title" => trim($c->plaintext),
+                            "uri" => $uri[0],
+                           "is_current_category" =>$uri[0]==$kategori?true:false,
+                            "url" => "https://" . $storeName . self::$storeEndUrl . "/" . $uri[0],
+                            "sub_categories" => NULL
+                        );
+                    }
+                    $level = str_replace("level", "", $u->class);
+                    if ($level == 0) {
+                        self::$data[]= $cats;
+                    }
+                    else if ($level == 1) {
+                        self::$data[$x-$level]["sub_categories"][] = $cats;
+                    }
+                    else if ($level == 2) {
+                        self::$data[$x-$level]["sub_categories"][$x-$level]["sub_categories"][] = $cats;
+                    }
+                    else if ($level == 3) {
+                        self::$data[$x-$level]["sub_categories"][$x-$level]["sub_categories"][$x-$level]["sub_categories"][] = $cats;
+                    }
+                    else if ($level == 4) {
+                        self::$data[$x-$level]["sub_categories"][$x-$level]["sub_categories"][$x-$level]["sub_categories"][$x-$level]["sub_categories"][] = $cats;
+                    }
+
+
+
+                }
+            }
+
+
+
+        } else {
+            self::$data[] = array("error" => true, "store_name" => $storeName, "message" => "Mağaza adı giriniz.");
+        }
+
+        return self::ReturnWithTypes($type);
+
+    }
+
+
+    /**
+     * Mağazaya ait ilanları listeler.
+     *
+     * @param string $storeName
+     * @param int $itemCount
+     * @param array $filters
+     * @param string $type
+     * @return JSON,XML,Array
+     */
+    static function MagazaListe($storeName, $itemCount = 20, $filters = NULL, $type = "json")
+    {
+
+        self::$data = array();
+        $filterText = "";
+        if (is_array($filters)) {
+            foreach ($filters as $key => $val) {
+                $filterText .= "&" . $key . "=" . $val;
+            }
+        }
+
+
+        if ($itemCount > 20) {
+            $pageCount = ceil($itemCount / 20);
+        } else {
+            $pageCount = 1;
+        }
+        for ($p = 0; $p <= $pageCount - 1; $p++) {
+            $page = $p * 20;
+            $pageFilter = '?pagingOffset=' . $page;
+            $url = "https://" . $storeName . self::$storeEndUrl . $pageFilter . $filterText;
+            $open = self::Curl($url);
+
+            $columns = str_get_html($open)->find("div.classified-list table thead th");
+            $tr = str_get_html($open)->find("div.classified-list table tbody tr");
+            $colCount = count($columns);
+            if (count($tr) > 0) {
+                for ($j = 1; $j <= count($tr) - 1; $j++) {
+                    $d = array();
+
+                    $href = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", 0)->find("a", 0);
+                    $img = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", 0)->find("a", 0)->find("img", 0);
+                    $baslik = explode("#", $img->alt);
+                    $d["id"] = $baslik[1];
+                    $d["title"] = trim($baslik[0]);
+                    $d["link"] = $href->href;
+                    $d["image"] = $img->src;
+
+                    $imgExp = explode("/", $img->src);
+                    $thmb = "thmb_" . end($imgExp);
+                    array_pop($imgExp);
+                    array_push($imgExp, $thmb);
+                    $thumb = implode("/", $imgExp);
+                    $d["thumb"] = $thumb;
+
+                    for ($x = 0; $x <= $colCount - 1; $x++) {
+                        $row = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", $x);
+                        if (!empty(trim($columns[$x]->plaintext))) {
+                            $title = self::turkishChars(strtolower(trim($columns[$x]->plaintext)));
+                            $d[$title] = trim($row->plaintext);
+                        }
+                    }
+
+
+                    self::$data[] = $d;
+                }
+            } else {
+                self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
+            }
+
+
+        }
+
+
+        return self::ReturnWithTypes($type);
+
+    }
+
+
+    /**
+     * Belirtilen mağazanın danışman listesini döndürür
+     *
+     * @param $store_name string
+     * @param $type string
+     * @return JSON,XML,Array
+     */
+    static function MagazaDanismanlari($storeName, $type = "json")
+    {
+
+        self::$data = array();
+        if (!empty($storeName)) {
+            $url = "https://" . $storeName . self::$storeEndUrl;
+            $open = self::Curl($url);
+            $agentsLink = str_get_html($open)->find("div.oc-select-list ul li a");
+            $agentsName = str_get_html($open)->find("div.oc-select-list ul li a p");
+            $agentsImg = str_get_html($open)->find("div.oc-select-list ul li a img");
+            $agentsPhone = str_get_html($open)->find("div.oc-select-list ul li a span");
+
+            for ($a = 0; $a <= count($agentsLink) - 1; $a++) {
+                $agentID = explode("userId=", $agentsLink[$a]->href);
+
+                self::$data[] = array(
+                    "name" => trim($agentsName[$a]->plaintext),
+                    "userId" => $agentID[1],
+                    "image_200" => $agentsImg[$a]->src,
+                    "image_400" => str_replace("p200", "p400", $agentsImg[$a]->src),
+                    "phone" => trim($agentsPhone[$a]->plaintext)
+                );
+            }
+
+        } else {
+            self::$data = array("error" => true, "store_name" => $storeName, "message" => "Mağaza adı bulunamadı.");
+        }
 
         return self::ReturnWithTypes($type);
 
@@ -476,6 +663,27 @@ class Sahibinden
             self::array_to_xml(self::$data, $xml);
             return $xml->asXML();
         }
+    }
+
+
+    /**
+     * Türkçe Karakterleri İngilizce karaktere çevirir boşlukları "-" tireye çevirir
+     *
+     * @param $string
+     * @return string
+     */
+    private function turkishChars($s)
+    {
+        $tr = array('ş', 'Ş', 'ı', 'I', 'İ', 'ğ', 'Ğ', 'ü', 'Ü', 'ö', 'Ö', 'Ç', 'ç', '(', ')', '/', ':', ',', '&', '"', "“", "”");
+        $eng = array('s', 's', 'i', 'i', 'i', 'g', 'g', 'u', 'u', 'o', 'o', 'c', 'c', '', '', '-', '-', '', "", "", "");
+        $s = str_replace($tr, $eng, $s);
+        $s = strtolower($s);
+        $s = preg_replace('/&amp;amp;amp;amp;amp;amp;amp;amp;amp;.+?;/', '', $s);
+        $s = preg_replace('/\s+/', '-', $s);
+        $s = preg_replace('|-+|', '-', $s);
+        $s = preg_replace('/#/', '', $s);
+        $s = trim($s, '-');
+        return $s;
     }
 
     /**
