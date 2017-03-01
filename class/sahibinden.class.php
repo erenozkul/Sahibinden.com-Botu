@@ -914,14 +914,12 @@ class Sahibinden
 
         $ch = curl_init($url);
         curl_setopt_array($ch, $options);
-
         $content = curl_exec($ch);
         $err = curl_errno($ch);
         $errmsg = curl_error($ch);
         $header = curl_getinfo($ch);
         $redirectURL = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
         curl_close($ch);
-
         $header['errno'] = $err;
         $header['errmsg'] = $errmsg;
         $header['redirect'] = $redirectURL;
