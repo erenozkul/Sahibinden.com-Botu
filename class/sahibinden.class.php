@@ -20,42 +20,73 @@ class Sahibinden
      *
      * @param null $url
      * @param array ,json,xml $type
+     * @param $proxy false|true
      * @return json,array,xml
      * @return default = json
      */
-    static function Kategori($type = "json", $url = NULL)
+    static function Kategori($type = "json", $url = NULL, $proxy = false)
     {
         self::$data = array();
 
         if (empty($url)) {
-            $open = self::Curl(self::$baseUrl);
-            $items = str_get_html($open)->find("ul.categories-left-menu", 0)->find("li a[title]");
-            if (count($items) > 0) {
-                foreach ($items as $element) {
-                    self::$data[] = array("title" => trim($element->plaintext),
-                        "uri" => trim($element->href),
-                        "url" => self::$baseUrl . trim($element->href)
-                    );
-
-                }
+            if ($proxy == true) {
+                $open = self::Curl(self::$baseUrl, true);
             } else {
-                self::$data[] = array("error" => true, "url" => self::$baseUrl, "message" => "Sonuç Bulunamadı.");
-
+                $open = self::Curl(self::$baseUrl);
             }
-        } else {
-            $link = self::$baseUrl . '/kategori/' . $url;
-            $open = self::Curl($link);
-            $items = str_get_html($open)->find("ul.categoryList", 0)->find("li a");
-            if (count($items) > 0) {
-                foreach ($items as $element) {
-                    self::$data[] = array("title" => trim($element->plaintext),
-                        "uri" => trim($element->href),
-                        "url" => self::$baseUrl . trim($element->href)
-                    );
+            if (!empty(@$open["error"])) {
+                if (!str_get_html($open)->find("div.errorPage404")) {
+
+
+                    $items = str_get_html($open)->find("ul.categories-left-menu", 0)->find("li a[title]");
+                    if (count($items) > 0) {
+                        foreach ($items as $element) {
+                            self::$data[] = array("title" => trim($element->plaintext),
+                                "uri" => trim($element->href),
+                                "url" => self::$baseUrl . trim($element->href)
+                            );
+
+                        }
+                    } else {
+                        self::$data[] = array("error" => true, "url" => self::$baseUrl, "message" => "Sonuç Bulunamadı.");
+
+                    }
+
+                } else {
+                    self::$data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
                 }
             } else {
-                self::$data[] = array("error" => true, "url" => $link, "message" => "Sonuç Bulunamadı.");
+                self::$data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
+            }
 
+        } else {
+            $url = self::$baseUrl . '/kategori/' . $url;
+            if ($proxy == true) {
+                $open = self::Curl($url, true);
+            } else {
+                $open = self::Curl($url);
+            }
+            if (!empty(@$open["error"])) {
+                if (!str_get_html($open)->find("div.errorPage404")) {
+
+
+                    $items = str_get_html($open)->find("ul.categoryList", 0)->find("li a");
+                    if (count($items) > 0) {
+                        foreach ($items as $element) {
+                            self::$data[] = array("title" => trim($element->plaintext),
+                                "uri" => trim($element->href),
+                                "url" => self::$baseUrl . trim($element->href)
+                            );
+                        }
+                    } else {
+                        self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
+
+                    }
+                } else {
+                    self::$data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
+                }
+            } else {
+                self::$data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
             }
 
         }
@@ -72,19 +103,20 @@ class Sahibinden
      * @param int $itemCount
      * @param array $filters
      * @param string $type
+     * @param $proxy false|true
      * @return json,array,xml
      */
-    static function Liste($kategoriLink, $itemCount = 20, $filters = NULL, $type = "json")
+    static function Liste($kategoriLink, $itemCount = 20, $filters = NULL, $type = "json", $proxy = false)
     {
         self::$data = array();
         $filterText = "";
         if (is_array($filters)) {
             foreach ($filters as $key => $val) {
-                if(is_array($filters[$key])){
-                    foreach ($filters[$key] as $v){
+                if (is_array($filters[$key])) {
+                    foreach ($filters[$key] as $v) {
                         $filterText .= "&" . $key . "=" . $v;
                     }
-                }else {
+                } else {
                     $filterText .= "&" . $key . "=" . $val;
                 }
 
@@ -103,34 +135,49 @@ class Sahibinden
 
             $pageFilter = '?pagingOffset=' . $page;
             $url = self::$baseUrl . "/" . $kategoriLink . $pageFilter . $filterText;
-            $open = self::Curl($url);
+            if ($proxy == true) {
+                $open = self::Curl($url, true);
+            } else {
+                $open = self::Curl($url);
+            }
+            if (!empty(@$open["error"])) {
+                if (!str_get_html($open)->find("div.errorPage404")) {
 
-            $links = str_get_html($open)->find("td.searchResultsSmallThumbnail a");
-            $images = str_get_html($open)->find("td.searchResultsSmallThumbnail a img");
-            $prices = @str_get_html($open)->find("td.searchResultsPriceValue div");
-            $dates = str_get_html($open)->find("td.searchResultsDateValue");
-            $addresses = str_get_html($open)->find("td.searchResultsLocationValue");
-            $resultText = str_get_html($open)->find("div.infoSearchResults div.result-text", 0)->plaintext;
-            $resultCount = str_get_html($open)->find("div.infoSearchResults div.result-text span", 1)->plaintext;
 
-            foreach ($links as $link) {
-                $linkArray[] = array("link" => self::$baseUrl . trim($link->href));
-                $uriArray[] = array("uri" => trim($link->href));
-            }
-            foreach ($images as $image) {
-                $thumbArray[] = array("thumb" => trim($image->src));
-                $imageArray[] = array("image" => str_replace("thmb_", "", trim($image->src)));
-                $titleArray[] = array("title" => trim(explode("#", $image->alt)[0]));
-                $idArray[] = array("id" => trim(explode("#", $image->alt)[1]));
-            }
-            foreach (@$prices as $price) {
-                $priceArray[] = array("price" => trim($price->plaintext));
-            }
-            foreach ($dates as $date) {
-                $dateArray[] = array("date" => str_replace("<br>", "", str_replace("</span>", "", str_replace("<span>", "", trim($date->plaintext)))));
-            }
-            foreach ($addresses as $address) {
-                $addressArray[] = array("address" => str_replace("<br>", "", trim($address->plaintext)));
+                    $links = str_get_html($open)->find("td.searchResultsSmallThumbnail a");
+                    $images = str_get_html($open)->find("td.searchResultsSmallThumbnail a img");
+                    $prices = @str_get_html($open)->find("td.searchResultsPriceValue div");
+                    $dates = str_get_html($open)->find("td.searchResultsDateValue");
+                    $addresses = str_get_html($open)->find("td.searchResultsLocationValue");
+                    $resultText = str_get_html($open)->find("div.infoSearchResults div.result-text", 0)->plaintext;
+                    $resultCount = str_get_html($open)->find("div.infoSearchResults div.result-text span", 1)->plaintext;
+
+                    foreach ($links as $link) {
+                        $linkArray[] = array("link" => self::$baseUrl . trim($link->href));
+                        $uriArray[] = array("uri" => trim($link->href));
+                    }
+                    foreach ($images as $image) {
+                        $thumbArray[] = array("thumb" => trim($image->src));
+                        $imageArray[] = array("image" => str_replace("thmb_", "", trim($image->src)));
+                        $titleArray[] = array("title" => trim(explode("#", $image->alt)[0]));
+                        $idArray[] = array("id" => trim(explode("#", $image->alt)[1]));
+                    }
+                    foreach (@$prices as $price) {
+                        $priceArray[] = array("price" => trim($price->plaintext));
+                    }
+                    foreach ($dates as $date) {
+                        $dateArray[] = array("date" => str_replace("<br>", "", str_replace("</span>", "", str_replace("<span>", "", trim($date->plaintext)))));
+                    }
+                    foreach ($addresses as $address) {
+                        $addressArray[] = array("address" => str_replace("<br>", "", trim($address->plaintext)));
+                    }
+
+
+                } else {
+                    self::$data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
+                }
+            } else {
+                self::$data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
             }
 
 
@@ -160,30 +207,45 @@ class Sahibinden
      *
      * @param null $url
      * @param json $type
+     * @param $proxy false|true
      * @return JSON,XML,Array
      */
-    static function Detay($uri = NULL, $type = "json")
+    static function Detay($uri = NULL, $type = "json", $proxy = false)
     {
         self::$data = array();
         $url = self::$baseUrl . $uri;
         if ($uri != NULL) {
-            $open = self::Curl($url);
-            $title = str_get_html($open)->find("div.classifiedDetailTitle h1", 0);
+            if ($proxy == true) {
+                $open = self::Curl($url, true);
+            } else {
+                $open = self::Curl($url);
+            }
+
+            if (!empty(@$open["error"])) {
+                if (!str_get_html($open)->find("div.errorPage404")) {
+
+                    $title = str_get_html($open)->find("div.classifiedDetailTitle h1", 0);
+                    self::$data = array(
+                        "url" => $url,
+                        "title" => $title->plaintext,
+                        "breadCrumb" => self::getDetailBreadcrumb($open),
+                        "address" => self::getDetailAddress($open),
+                        "price" => self::getDetailPrice($open),
+                        "seller" => self::getDetailSeller($open),
+                        "coordinates" => self::getDetailCoordinates($open),
+                        "info" => self::getDetailInfo($open),
+                        "properties" => self::getDetailProperties($open),
+                        "description" => self::getDetailDescription($open),
+                        "media" => self::getDetailMedia($open)
+                    );
 
 
-            self::$data = array(
-                "url" => $url,
-                "title" => $title->plaintext,
-                "breadCrumb" => self::getDetailBreadcrumb($open),
-                "address" => self::getDetailAddress($open),
-                "price" => self::getDetailPrice($open),
-                "seller" => self::getDetailSeller($open),
-                "coordinates" => self::getDetailCoordinates($open),
-                "info" => self::getDetailInfo($open),
-                "properties" => self::getDetailProperties($open),
-                "description" => self::getDetailDescription($open),
-                "media" => self::getDetailMedia($open)
-            );
+                } else {
+                    self::$data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
+                }
+            } else {
+                self::$data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
+            }
 
 
         } else {
@@ -197,14 +259,75 @@ class Sahibinden
 
 
     /**
-     * Mağazaya ait ana ve alt Kategorileri listelemek için kullanılır
+     * Mağazaya bilgilerini getirir
      *
-     * @param null $url
+     * @param string $storeName
      * @param array ,json,xml $type
+     * @param $proxy false|true
      * @return json,array,xml
      * @return default = json
      */
-    static function MagazaKategori($storeName, $kategori = NULL, $type = "json")
+    static function Magaza($storeName, $type = "json", $proxy = false)
+    {
+        self::$data = array();
+        if (is_array($storeName)) {
+            foreach ($storeName as $sn) {
+                if (!empty($sn)) {
+                    $url = "https://" . $sn . self::$storeEndUrl;
+                    if ($proxy == true) {
+                        $open = self::Curl($url, true);
+                    } else {
+                        $open = self::Curl($url);
+                    }
+                    if (!empty(@$open["error"])) {
+                        if (!str_get_html($open)->find("div.errorPage404")) {
+                            $storeImage = str_get_html($open)->find("div.information-area div", 0)->find("a img", 0);
+                            $storePhone = str_get_html($open)->find("div.information-area div", 0)->find("p", 0);
+                            $storeCover = str_get_html($open)->find("div.theme", 0)->find("img", 0);
+                            $storeIlanSayisi = str_get_html($open)->find("div.classified-count", 0)->find("strong", 0);
+                            $storeAbout = str_get_html($open)->find("div.about", 0)->find("h2", 0);
+                            self::$data[] = array(
+                                "store_name" => $sn,
+                                "title" => trim($storeImage->alt),
+                                "about" => trim($storeAbout->plaintext),
+                                "profile-img" => $storeImage->src,
+                                "cover-img" => $storeCover->src,
+                                "phone" => trim(@$storePhone->plaintext),
+                                "ad-count" => intval(trim($storeIlanSayisi->plaintext)),
+                            );
+                        } else {
+                            self::$data[] = array("error" => true, "store_name" => $sn, "message" => "Sayfa Bulunamadı.");
+                        }
+                    } else {
+                        self::$data[] = array("error" => true, "store_name" => $sn, "message" => $open["error"]);
+                    }
+                } else {
+                    self::$data[] = array("error" => true, "store_name" => $sn, "message" => "Mağaza adı boş olamaz");
+                }
+
+            }
+
+
+        } else {
+            self::$data = array("error" => true, "store_name" => $storeName, "message" => "Mağaza ad(lar)ı dizi olarak giriniz.");
+        }
+
+        return self::ReturnWithTypes($type);
+
+    }
+
+
+    /**
+     * Mağazaya ait ana ve alt Kategorileri listelemek için kullanılır
+     *
+     * @param string $storeName
+     * @param null $kategori
+     * @param array ,json,xml $type
+     * @param $proxy false|true
+     * @return json,array,xml
+     * @return default = json
+     */
+    static function MagazaKategori($storeName, $kategori = NULL, $type = "json", $proxy = false)
     {
         if (!empty($storeName)) {
             if ($kategori == NULL) {
@@ -212,45 +335,54 @@ class Sahibinden
             } else {
                 $url = "https://" . $storeName . self::$storeEndUrl . "/" . $kategori;
             }
-            $open = self::Curl($url);
-
-            for($x=0; $x<=10; $x++) {
-                $ul = str_get_html($open)->find("div.categories ul li.level".$x);
-                foreach ($ul as $u) {
-                    $categories = $u->find("a");
-                    foreach ($categories as $c) {
-                        $uri = explode("?", str_replace("/", "", $c->href));
-                       $cats = array(
-                            "title" => trim($c->plaintext),
-                            "uri" => $uri[0],
-                           "is_current_category" =>$uri[0]==$kategori?true:false,
-                            "url" => "https://" . $storeName . self::$storeEndUrl . "/" . $uri[0],
-                            "sub_categories" => NULL
-                        );
-                    }
-                    $level = str_replace("level", "", $u->class);
-                    if ($level == 0) {
-                        self::$data[]= $cats;
-                    }
-                    else if ($level == 1) {
-                        self::$data[$x-$level]["sub_categories"][] = $cats;
-                    }
-                    else if ($level == 2) {
-                        self::$data[$x-$level]["sub_categories"][$x-$level]["sub_categories"][] = $cats;
-                    }
-                    else if ($level == 3) {
-                        self::$data[$x-$level]["sub_categories"][$x-$level]["sub_categories"][$x-$level]["sub_categories"][] = $cats;
-                    }
-                    else if ($level == 4) {
-                        self::$data[$x-$level]["sub_categories"][$x-$level]["sub_categories"][$x-$level]["sub_categories"][$x-$level]["sub_categories"][] = $cats;
-                    }
 
 
-
-                }
+            if ($proxy == true) {
+                $open = self::Curl($url, true);
+            } else {
+                $open = self::Curl($url);
             }
+            if (!empty(@$open["error"])) {
+                if (!str_get_html($open)->find("div.errorPage404")) {
+
+                    for ($x = 0; $x <= 10; $x++) {
+                        $ul = str_get_html($open)->find("div.categories ul li.level" . $x);
+                        foreach ($ul as $u) {
+                            $categories = $u->find("a");
+                            foreach ($categories as $c) {
+                                $uri = explode("?", str_replace("/", "", $c->href));
+                                $cats = array(
+                                    "title" => trim($c->plaintext),
+                                    "uri" => $uri[0],
+                                    "is_current_category" => $uri[0] == $kategori ? true : false,
+                                    "url" => "https://" . $storeName . self::$storeEndUrl . "/" . $uri[0],
+                                    "sub_categories" => NULL
+                                );
+                            }
+                            $level = str_replace("level", "", $u->class);
+                            if ($level == 0) {
+                                self::$data[] = $cats;
+                            } else if ($level == 1) {
+                                self::$data[$x - $level]["sub_categories"][] = $cats;
+                            } else if ($level == 2) {
+                                self::$data[$x - $level]["sub_categories"][$x - $level]["sub_categories"][] = $cats;
+                            } else if ($level == 3) {
+                                self::$data[$x - $level]["sub_categories"][$x - $level]["sub_categories"][$x - $level]["sub_categories"][] = $cats;
+                            } else if ($level == 4) {
+                                self::$data[$x - $level]["sub_categories"][$x - $level]["sub_categories"][$x - $level]["sub_categories"][$x - $level]["sub_categories"][] = $cats;
+                            }
 
 
+                        }
+                    }
+
+
+                } else {
+                    self::$data[] = array("error" => true, "store_name" => $storeName, "message" => "Sayfa Bulunamadı.");
+                }
+            } else {
+                self::$data[] = array("error" => true, "store_name" => $storeName, "message" => $open["error"]);
+            }
 
         } else {
             self::$data[] = array("error" => true, "store_name" => $storeName, "message" => "Mağaza adı giriniz.");
@@ -268,20 +400,21 @@ class Sahibinden
      * @param int $itemCount
      * @param array $filters
      * @param string $type
+     * @param $proxy false|true
      * @return JSON,XML,Array
      */
-    static function MagazaListe($storeName, $itemCount = 20, $filters = NULL, $type = "json")
+    static function MagazaListe($storeName, $itemCount = 20, $filters = NULL, $type = "json", $proxy = false)
     {
 
         self::$data = array();
         $filterText = "";
         if (is_array($filters)) {
             foreach ($filters as $key => $val) {
-                if(is_array($filters[$key])){
-                    foreach ($filters[$key] as $v){
+                if (is_array($filters[$key])) {
+                    foreach ($filters[$key] as $v) {
                         $filterText .= "&" . $key . "=" . $v;
                     }
-                }else {
+                } else {
                     $filterText .= "&" . $key . "=" . $val;
                 }
 
@@ -299,49 +432,63 @@ class Sahibinden
             $page = $p * 20;
             $pageFilter = '?pagingOffset=' . $page;
             $url = "https://" . $storeName . self::$storeEndUrl . $pageFilter . $filterText;
-            $open = self::Curl($url);
+            if ($proxy == true) {
+                $open = self::Curl($url, true);
+            } else {
+                $open = self::Curl($url);
+            }
 
             $columns = str_get_html($open)->find("div.classified-list table thead th");
             $tr = str_get_html($open)->find("div.classified-list table tbody tr");
             $colCount = count($columns);
-            if (count($tr) > 0) {
+            if (!empty(@$open["error"])) {
+                if (!str_get_html($open)->find("div.errorPage404")) {
 
-                for ($j = 1; $j <= count($tr) - 1; $j++) {
-                    if ($ic == $itemCount) {
-                        continue;
-                    } else {
-                        $d = array();
+                    if (count($tr) > 0) {
 
-                        $href = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", 0)->find("a", 0);
-                        $img = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", 0)->find("a", 0)->find("img", 0);
-                        $baslik = explode("#", $img->alt);
-                        $d["id"] = $baslik[1];
-                        $d["title"] = trim($baslik[0]);
-                        $d["link"] = $href->href;
-                        $d["image"] = $img->src;
+                        for ($j = 1; $j <= count($tr) - 1; $j++) {
+                            if ($ic == $itemCount) {
+                                continue;
+                            } else {
+                                $d = array();
 
-                        $imgExp = explode("/", $img->src);
-                        $thmb = "thmb_" . end($imgExp);
-                        array_pop($imgExp);
-                        array_push($imgExp, $thmb);
-                        $thumb = implode("/", $imgExp);
-                        $d["thumb"] = $thumb;
+                                $href = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", 0)->find("a", 0);
+                                $img = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", 0)->find("a", 0)->find("img", 0);
+                                $baslik = explode("#", $img->alt);
+                                $d["id"] = $baslik[1];
+                                $d["title"] = trim($baslik[0]);
+                                $d["link"] = $href->href;
+                                $d["image"] = $img->src;
 
-                        for ($x = 0; $x <= $colCount - 1; $x++) {
-                            $row = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", $x);
-                            if (!empty(trim($columns[$x]->plaintext))) {
-                                $title = self::turkishChars(strtolower(trim($columns[$x]->plaintext)));
-                                $d[$title] = trim($row->plaintext);
+                                $imgExp = explode("/", $img->src);
+                                $thmb = "thmb_" . end($imgExp);
+                                array_pop($imgExp);
+                                array_push($imgExp, $thmb);
+                                $thumb = implode("/", $imgExp);
+                                $d["thumb"] = $thumb;
+
+                                for ($x = 0; $x <= $colCount - 1; $x++) {
+                                    $row = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", $x);
+                                    if (!empty(trim($columns[$x]->plaintext))) {
+                                        $title = self::turkishChars(strtolower(trim($columns[$x]->plaintext)));
+                                        $d[$title] = trim($row->plaintext);
+                                    }
+                                }
+
+
+                                self::$data[] = $d;
+                                $ic++;
                             }
                         }
-
-
-                        self::$data[] = $d;
-                        $ic++;
+                    } else {
+                        self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
                     }
+
+                } else {
+                    self::$data[] = array("error" => true, "store_name" => $storeName, "message" => "Sayfa Bulunamadı.");
                 }
             } else {
-                self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
+                self::$data[] = array("error" => true, "store_name" => $storeName, "message" => $open["error"]);
             }
 
 
@@ -358,30 +505,47 @@ class Sahibinden
      *
      * @param $store_name string
      * @param $type string
+     * @param $proxy false|true
      * @return JSON,XML,Array
      */
-    static function MagazaDanismanlari($storeName, $type = "json")
+    static function MagazaDanismanlari($storeName, $type = "json", $proxy = false)
     {
 
         self::$data = array();
         if (!empty($storeName)) {
             $url = "https://" . $storeName . self::$storeEndUrl;
-            $open = self::Curl($url);
-            $agentsLink = str_get_html($open)->find("div.oc-select-list ul li a");
-            $agentsName = str_get_html($open)->find("div.oc-select-list ul li a p");
-            $agentsImg = str_get_html($open)->find("div.oc-select-list ul li a img");
-            $agentsPhone = str_get_html($open)->find("div.oc-select-list ul li a span");
+            if ($proxy == true) {
+                $open = self::Curl($url, true);
+            } else {
+                $open = self::Curl($url);
+            }
 
-            for ($a = 0; $a <= count($agentsLink) - 1; $a++) {
-                $agentID = explode("userId=", $agentsLink[$a]->href);
+            if (!empty(@$open["error"])) {
+                if (!str_get_html($open)->find("div.errorPage404")) {
 
-                self::$data[] = array(
-                    "name" => trim($agentsName[$a]->plaintext),
-                    "userId" => $agentID[1],
-                    "image_200" => $agentsImg[$a]->src,
-                    "image_400" => str_replace("p200", "p400", $agentsImg[$a]->src),
-                    "phone" => trim($agentsPhone[$a]->plaintext)
-                );
+
+                    $agentsLink = str_get_html($open)->find("div.oc-select-list ul li a");
+                    $agentsName = str_get_html($open)->find("div.oc-select-list ul li a p");
+                    $agentsImg = str_get_html($open)->find("div.oc-select-list ul li a img");
+                    $agentsPhone = str_get_html($open)->find("div.oc-select-list ul li a span");
+
+                    for ($a = 0; $a <= count($agentsLink) - 1; $a++) {
+                        $agentID = explode("userId=", $agentsLink[$a]->href);
+
+                        self::$data[] = array(
+                            "name" => trim($agentsName[$a]->plaintext),
+                            "userId" => $agentID[1],
+                            "image_200" => $agentsImg[$a]->src,
+                            "image_400" => str_replace("p200", "p400", $agentsImg[$a]->src),
+                            "phone" => trim($agentsPhone[$a]->plaintext)
+                        );
+                    }
+
+                } else {
+                    self::$data[] = array("error" => true, "store_name" => $storeName, "message" => "Sayfa Bulunamadı.");
+                }
+            } else {
+                self::$data[] = array("error" => true, "store_name" => $storeName, "message" => $open["error"]);
             }
 
         } else {
@@ -397,6 +561,7 @@ class Sahibinden
      *
      * @param $il //Plaka Kodu
      * @param $type //Dönecek veri formatı
+     * @param $proxy false|true
      * @return  JSON,XML,Array
      */
     static function TownCodes($il = NULL, $type = "json")
@@ -726,38 +891,46 @@ class Sahibinden
      * @param null $proxy
      * @return mixed
      */
-    private function Curl($url, $proxy = NULL)
+    private function Curl($url, $proxy = false)
     {
-        $options = array(CURLOPT_RETURNTRANSFER => true,
+
+        $options = array(
+            CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HEADER => false,
             CURLOPT_ENCODING => "",
             CURLOPT_AUTOREFERER => true,
-            CURLOPT_FOLLOWLOCATION =>true,
+            CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_CONNECTTIMEOUT => 30,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_SSL_VERIFYPEER => false
+            CURLOPT_SSL_VERIFYPEER => false,
+
         );
+        if ($proxy == true) {
+            $proxyList = json_decode(file_get_contents("proxy.json"),true);
+            $p = rand(0, count($proxyList) - 1);
+            array_push($options, array(CURLOPT_PROXY => $proxyList[$p]));
+        }
 
         $ch = curl_init($url);
         curl_setopt_array($ch, $options);
+
         $content = curl_exec($ch);
         $err = curl_errno($ch);
         $errmsg = curl_error($ch);
         $header = curl_getinfo($ch);
-        $redirectURL = curl_getinfo($ch,CURLINFO_EFFECTIVE_URL );
+        $redirectURL = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
         curl_close($ch);
 
         $header['errno'] = $err;
         $header['errmsg'] = $errmsg;
         $header['redirect'] = $redirectURL;
         $header['content'] = $content;
-        if(empty($errmsg)) {
+        if (empty($errmsg)) {
 
             return str_replace(array("\n", "\r", "\t"), NULL, $header['content']);
-        }
-        else{
-            return $err.":".$errmsg;
+        } else {
+            return array("error" => "code: " . $err . " message:" . $errmsg);
         }
     }
 

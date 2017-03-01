@@ -12,7 +12,7 @@ require 'class/sahibinden.class.php';
 //@return xml,json,array
 
 //echo Sahibinden::Kategori();
-//echo Sahibinden::Kategori("xml");
+//echo Sahibinden::Kategori("xml","emlak",true); //Emlak Kategorisindekiler proxy kullanara xml formatında döndürür
 
 //Alt Kategoriler
 //@return xml,json,array
@@ -51,9 +51,15 @@ require 'class/sahibinden.class.php';
 //echo Sahibinden::Detay("/ilan/vasita-otomobil-lotus-lotus-cars-turkey-elise-20th-edition-398612300/detay","json");
 
 
+//Mağaza Bilgileri
+$stores = array("remaxpiramit",
+                "vatanotomobil",
+                "blackmotors");
+//echo Sahibinden::Magaza($stores);
+
 //Mağaza Kategorilerini Alt Kategoriyle birlikte
 //print_r(Sahibinden::MagazaKategori("remaxpiramit",NULL,"array"));
-//echo Sahibinden::MagazaKategori("remaxpiramit");
+//echo Sahibinden::MagazaKategori("remaxpiramit",NULL,"json",true);// Mağaza Kategorilerini proxy ile json formatında getirir
 
 
 

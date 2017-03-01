@@ -1,26 +1,22 @@
 Hakkında
 ====================
 
+
 Sahibinden.com için @tayfunerbilen 'in eskiden hazırlamış olduğu bot'u güncel hale getirdim. Ve yeni özellikler eklemeye devam edeceğim. 
 Şuan güzel bir şekilde; kategorileri, alt kategorileri, kategori listelerini ve detayları çekmektedir.
 
 3 formattan dilediğinizi döndürebilirsiniz.
+* JSON
+* Array
+* XML
 
--json
--array
--xml
+Kullanımına aşağıdan bakabilirsiniz.
 
-
-*default olarak json değer dönmektedir.
-
-
-
-Kullanımı da oldukça basit, aşağıdan bakabilirsiniz.
-
-
+* Default olarak json değer dönmektedir.
+* Proxy kullanımı istek sürenizi uzatabilir
 
 Kullanımı
-====================
+=
 
 ```php
 require 'class/sahibinden.class.php';
@@ -31,7 +27,7 @@ require 'class/sahibinden.class.php';
 @return xml,json,array
 ```php
 echo Sahibinden::Kategori();
-echo Sahibinden::Kategori("xml");
+echo Sahibinden::Kategori("xml","emlak",true); //Emlak Kategorisindekiler proxy kullanara xml formatında döndürür
 ```
 <br><br>
 <h4>Alt Kategoriler</h4>
@@ -75,12 +71,24 @@ echo Sahibinden::TownCodes(34); // İstanbul ilçelerini JSON formatında dönd�
 ```php
 echo Sahibinden::Detay("/ilan/vasita-otomobil-lotus-lotus-cars-turkey-elise-20th-edition-398612300/detay","json");
 ```
+
 <br><br>
-<h4>Mağaza Kategorilerini Alt Kategoriyle birlikte</h4>
+
+Mağazalar
+-
+<h4>Mağaza Bilgileri</h4>
+```php
+$stores = array("remaxpiramit",
+                "vatanotomobil",
+                "blackmotors");
+echo Sahibinden::Magaza($stores);
+```
+
+<h4>Mağaza Kategorileri (Alt Kategorileri ile birlikte)</h4>
 @return xml,json,array
 ```php
 print_r(Sahibinden::MagazaKategori("remaxpiramit",NULL,"array"));
-echo Sahibinden::MagazaKategori("remaxpiramit","emlak-konut");
+echo Sahibinden::MagazaKategori("remaxpiramit",NULL,"json",true);// Mağaza Kategorilerini proxy ile json formatında getirir
 ```
 
 <br><br>
