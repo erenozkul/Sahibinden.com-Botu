@@ -1,3 +1,10 @@
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- Place this tag where you want the button to render. -->
+<a class="github-button" href="https://github.com/erenozkul/Sahibinden.com-Botu/archive/master.zip" data-icon="octicon-cloud-download" data-style="mega" aria-label="Download erenozkul/Sahibinden.com-Botu on GitHub">Download</a>
+
+
 Hakkında
 ====================
 
