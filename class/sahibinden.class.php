@@ -184,14 +184,21 @@ class Sahibinden
         }
 
         if (count(@$linkArray) > 0) {
-            self::$data["properties"] = array("count" => count($linkArray),
+            self::$data["properties"] = array("count" => $itemCount,
                 "resultText" => str_replace('"', "'", $resultText),
                 "resultCount" => intval(str_replace(".", "", str_replace(' ilan ', "", $resultCount))),
                 "filters" => $filters,
                 "url" => str_replace("pagingOffset=" . $page, "", $url));
-            for ($i = 0; $i <= $itemCount - 1; $i++) {
-                self::$data["results"][] = @array_merge($idArray[$i], $linkArray[$i], $uriArray[$i], $titleArray[$i], $thumbArray[$i], $imageArray[$i], $priceArray[$i], $dateArray[$i], $addressArray[$i]);
+            if(count($linkArray) < ($itemCount-1)){
+                for ($i = 0; $i <= count($linkArray)- 1; $i++) {
+                    self::$data["results"][] = @array_merge($idArray[$i], $linkArray[$i], $uriArray[$i], $titleArray[$i], $thumbArray[$i], $imageArray[$i], $priceArray[$i], $dateArray[$i], $addressArray[$i]);
+                }
+            }else{
+                for ($i = 0; $i <= $itemCount - 1; $i++) {
+                    self::$data["results"][] = @array_merge($idArray[$i], $linkArray[$i], $uriArray[$i], $titleArray[$i], $thumbArray[$i], $imageArray[$i], $priceArray[$i], $dateArray[$i], $addressArray[$i]);
+                }
             }
+
 
         } else {
             self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");

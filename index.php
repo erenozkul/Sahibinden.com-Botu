@@ -7,6 +7,8 @@
 header('Content-type: text/html; charset=utf8');
 require 'class/sahibinden.class.php';
 
+ini_set('memory_limit', '512M');
+set_time_limit(0);
 
 //Ana Kategoriler
 //@return xml,json,array
@@ -25,8 +27,8 @@ require 'class/sahibinden.class.php';
 //@return xml,json,array
  $filters = array(
      "date" => "1days", //1,3,7,15,30  //1 günlük ilanlar
-     "address_city" => array("34","22"), //il plaka kodu
-     "address_town" => "71",  //ilçe kodu
+     "address_city" => array("34"), //il plaka kodu
+     "address_town" => array("451","435"),  //ilçe kodu
      "price_currency" => "1", //1=TL, 2=USD, 3=EUR, 4=GBP  //para birimi
      "price_min" => "5000", //minimum fiyat
      "price_max" => "12000", //maximum fiyat
