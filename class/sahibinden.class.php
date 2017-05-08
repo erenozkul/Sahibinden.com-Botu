@@ -10,9 +10,9 @@ require_once "simple_html_dom.php";
 
 class Sahibinden
 {
-    static $baseUrl = "https://www.sahibinden.com";
-    static $storeEndUrl = ".sahibinden.com";
-    static $data = array();
+    public $baseUrl = "https://www.sahibinden.com";
+    public $storeEndUrl = ".sahibinden.com";
+    public $data = array();
 
 
     /**
@@ -24,15 +24,15 @@ class Sahibinden
      * @return json,array,xml
      * @return default = json
      */
-    static function Kategori($type = "json", $url = NULL, $proxy = false)
+    public function Kategori($type = "json", $url = NULL, $proxy = false)
     {
-        self::$data = array();
+        $this->data = array();
 
         if (empty($url)) {
             if ($proxy == true) {
-                $open = self::Curl(self::$baseUrl, true);
+                $open = $this->Curl($this->baseUrl, true);
             } else {
-                $open = self::Curl(self::$baseUrl);
+                $open = $this->Curl($this->baseUrl);
             }
             if (!empty(@$open["error"])) {
                 if (!str_get_html($open)->find("div.errorPage404")) {
@@ -41,30 +41,30 @@ class Sahibinden
                     $items = str_get_html($open)->find("ul.categories-left-menu", 0)->find("li a[title]");
                     if (count($items) > 0) {
                         foreach ($items as $element) {
-                            self::$data[] = array("title" => trim($element->plaintext),
+                            $this->data[] = array("title" => trim($element->plaintext),
                                 "uri" => trim($element->href),
-                                "url" => self::$baseUrl . trim($element->href)
+                                "url" => $this->baseUrl . trim($element->href)
                             );
 
                         }
                     } else {
-                        self::$data[] = array("error" => true, "url" => self::$baseUrl, "message" => "Sonuç Bulunamadı.");
+                        $this->data[] = array("error" => true, "url" => $this->baseUrl, "message" => "Sonuç Bulunamadı.");
 
                     }
 
                 } else {
-                    self::$data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
+                    $this->data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
                 }
             } else {
-                self::$data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
+                $this->data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
             }
 
         } else {
-            $url = self::$baseUrl . '/kategori/' . $url;
+            $url = $this->baseUrl . '/kategori/' . $url;
             if ($proxy == true) {
-                $open = self::Curl($url, true);
+                $open = $this->Curl($url, true);
             } else {
-                $open = self::Curl($url);
+                $open = $this->Curl($url);
             }
             if (!empty(@$open["error"])) {
                 if (!str_get_html($open)->find("div.errorPage404")) {
@@ -73,26 +73,26 @@ class Sahibinden
                     $items = str_get_html($open)->find("ul.categoryList", 0)->find("li a");
                     if (count($items) > 0) {
                         foreach ($items as $element) {
-                            self::$data[] = array("title" => trim($element->plaintext),
+                            $this->data[] = array("title" => trim($element->plaintext),
                                 "uri" => trim($element->href),
-                                "url" => self::$baseUrl . trim($element->href)
+                                "url" => $this->baseUrl . trim($element->href)
                             );
                         }
                     } else {
-                        self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
+                        $this->data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
 
                     }
                 } else {
-                    self::$data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
+                    $this->data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
                 }
             } else {
-                self::$data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
+                $this->data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
             }
 
         }
 
 
-        return self::ReturnWithTypes($type);
+        return $this->ReturnWithTypes($type);
 
     }
 
@@ -106,9 +106,9 @@ class Sahibinden
      * @param $proxy false|true
      * @return json,array,xml
      */
-    static function Liste($kategoriLink, $itemCount = 20, $filters = NULL, $type = "json", $proxy = false)
+    public function Liste($kategoriLink, $itemCount = 20, $filters = NULL, $type = "json", $proxy = false)
     {
-        self::$data = array();
+        $this->data = array();
         $filterText = "";
         if (is_array($filters)) {
             foreach ($filters as $key => $val) {
@@ -134,18 +134,18 @@ class Sahibinden
             $page = $p * 20;
 
             $pageFilter = '?pagingOffset=' . $page;
-            $url = self::$baseUrl . "/" . $kategoriLink . $pageFilter . $filterText;
+            $url = $this->baseUrl . "/" . $kategoriLink . $pageFilter . $filterText;
             if ($proxy == true) {
-                $open = self::Curl($url, true);
+                $open = $this->Curl($url, true);
             } else {
-                $open = self::Curl($url);
+                $open = $this->Curl($url);
             }
             if (!empty(@$open["error"])) {
                 if (!str_get_html($open)->find("div.errorPage404")) {
 
 
-                    $links = str_get_html($open)->find("td.searchResultsSmallThumbnail a");
-                    $images = str_get_html($open)->find("td.searchResultsSmallThumbnail a img");
+                    $links = str_get_html($open)->find("td.searchResultsLargeThumbnail a");
+                    $images = str_get_html($open)->find("td.searchResultsLargeThumbnail a img");
                     $prices = @str_get_html($open)->find("td.searchResultsPriceValue div");
                     $dates = str_get_html($open)->find("td.searchResultsDateValue");
                     $addresses = str_get_html($open)->find("td.searchResultsLocationValue");
@@ -153,7 +153,7 @@ class Sahibinden
                     $resultCount = str_get_html($open)->find("div.infoSearchResults div.result-text span", 1)->plaintext;
 
                     foreach ($links as $link) {
-                        $linkArray[] = array("link" => self::$baseUrl . trim($link->href));
+                        $linkArray[] = array("link" => $this->baseUrl . trim($link->href));
                         $uriArray[] = array("uri" => trim($link->href));
                     }
                     foreach ($images as $image) {
@@ -174,37 +174,37 @@ class Sahibinden
 
 
                 } else {
-                    self::$data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
+                    $this->data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
                 }
             } else {
-                self::$data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
+                $this->data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
             }
 
 
         }
 
         if (count(@$linkArray) > 0) {
-            self::$data["properties"] = array("count" => $itemCount,
+            $this->data["properties"] = array("count" => $itemCount,
                 "resultText" => str_replace('"', "'", $resultText),
                 "resultCount" => intval(str_replace(".", "", str_replace(' ilan ', "", $resultCount))),
                 "filters" => $filters,
                 "url" => str_replace("pagingOffset=" . $page, "", $url));
             if(count($linkArray) < ($itemCount-1)){
                 for ($i = 0; $i <= count($linkArray)- 1; $i++) {
-                    self::$data["results"][] = @array_merge($idArray[$i], $linkArray[$i], $uriArray[$i], $titleArray[$i], $thumbArray[$i], $imageArray[$i], $priceArray[$i], $dateArray[$i], $addressArray[$i]);
+                    $this->data["results"][] = @array_merge($idArray[$i], $linkArray[$i], $uriArray[$i], $titleArray[$i], $thumbArray[$i], $imageArray[$i], $priceArray[$i], $dateArray[$i], $addressArray[$i]);
                 }
             }else{
                 for ($i = 0; $i <= $itemCount - 1; $i++) {
-                    self::$data["results"][] = @array_merge($idArray[$i], $linkArray[$i], $uriArray[$i], $titleArray[$i], $thumbArray[$i], $imageArray[$i], $priceArray[$i], $dateArray[$i], $addressArray[$i]);
+                    $this->data["results"][] = @array_merge($idArray[$i], $linkArray[$i], $uriArray[$i], $titleArray[$i], $thumbArray[$i], $imageArray[$i], $priceArray[$i], $dateArray[$i], $addressArray[$i]);
                 }
             }
 
 
         } else {
-            self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
+            $this->data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
         }
 
-        return self::ReturnWithTypes($type);
+        return $this->ReturnWithTypes($type);
 
     }
 
@@ -217,50 +217,50 @@ class Sahibinden
      * @param $proxy false|true
      * @return JSON,XML,Array
      */
-    static function Detay($uri = NULL, $type = "json", $proxy = false)
+    public function Detay($uri = NULL, $type = "json", $proxy = false)
     {
-        self::$data = array();
-        $url = self::$baseUrl . $uri;
+        $this->data = array();
+        $url = $this->baseUrl . $uri;
         if ($uri != NULL) {
             if ($proxy == true) {
-                $open = self::Curl($url, true);
+                $open = $this->Curl($url, true);
             } else {
-                $open = self::Curl($url);
+                $open = $this->Curl($url);
             }
 
             if (!empty(@$open["error"])) {
                 if (!str_get_html($open)->find("div.errorPage404")) {
 
                     $title = str_get_html($open)->find("div.classifiedDetailTitle h1", 0);
-                    self::$data = array(
+                    $this->data = array(
                         "url" => $url,
                         "title" => $title->plaintext,
-                        "breadCrumb" => self::getDetailBreadcrumb($open),
-                        "address" => self::getDetailAddress($open),
-                        "price" => self::getDetailPrice($open),
-                        "seller" => self::getDetailSeller($open),
-                        "coordinates" => self::getDetailCoordinates($open),
-                        "info" => self::getDetailInfo($open),
-                        "properties" => self::getDetailProperties($open),
-                        "description" => self::getDetailDescription($open),
-                        "media" => self::getDetailMedia($open)
+                        "breadCrumb" => $this->getDetailBreadcrumb($open),
+                        "address" => $this->getDetailAddress($open),
+                        "price" => $this->getDetailPrice($open),
+                        "seller" => $this->getDetailSeller($open),
+                        "coordinates" => $this->getDetailCoordinates($open),
+                        "info" => $this->getDetailInfo($open),
+                        "properties" => $this->getDetailProperties($open),
+                        "description" => $this->getDetailDescription($open),
+                        "media" => $this->getDetailMedia($open)
                     );
 
 
                 } else {
-                    self::$data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
+                    $this->data[] = array("error" => true, "url" => $url, "message" => "Sayfa Bulunamadı.");
                 }
             } else {
-                self::$data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
+                $this->data[] = array("error" => true, "url" => $url, "message" => $open["error"]);
             }
 
 
         } else {
-            self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
+            $this->data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
         }
 
 
-        return self::ReturnWithTypes($type);
+        return $this->ReturnWithTypes($type);
 
     }
 
@@ -274,17 +274,17 @@ class Sahibinden
      * @return json,array,xml
      * @return default = json
      */
-    static function Magaza($storeName, $type = "json", $proxy = false)
+    public function Magaza($storeName, $type = "json", $proxy = false)
     {
-        self::$data = array();
+        $this->data = array();
         if (is_array($storeName)) {
             foreach ($storeName as $sn) {
                 if (!empty($sn)) {
-                    $url = "https://" . $sn . self::$storeEndUrl;
+                    $url = "https://" . $sn . $this->storeEndUrl;
                     if ($proxy == true) {
-                        $open = self::Curl($url, true);
+                        $open = $this->Curl($url, true);
                     } else {
-                        $open = self::Curl($url);
+                        $open = $this->Curl($url);
                     }
                     if (!empty(@$open["error"])) {
                         if (!str_get_html($open)->find("div.errorPage404")) {
@@ -293,7 +293,7 @@ class Sahibinden
                             $storeCover = str_get_html($open)->find("div.theme", 0)->find("img", 0);
                             $storeIlanSayisi = str_get_html($open)->find("div.classified-count", 0)->find("strong", 0);
                             $storeAbout = str_get_html($open)->find("div.about", 0)->find("h2", 0);
-                            self::$data[] = array(
+                            $this->data[] = array(
                                 "store_name" => $sn,
                                 "title" => trim($storeImage->alt),
                                 "about" => trim($storeAbout->plaintext),
@@ -303,23 +303,23 @@ class Sahibinden
                                 "ad-count" => intval(trim($storeIlanSayisi->plaintext)),
                             );
                         } else {
-                            self::$data[] = array("error" => true, "store_name" => $sn, "message" => "Sayfa Bulunamadı.");
+                            $this->data[] = array("error" => true, "store_name" => $sn, "message" => "Sayfa Bulunamadı.");
                         }
                     } else {
-                        self::$data[] = array("error" => true, "store_name" => $sn, "message" => $open["error"]);
+                        $this->data[] = array("error" => true, "store_name" => $sn, "message" => $open["error"]);
                     }
                 } else {
-                    self::$data[] = array("error" => true, "store_name" => $sn, "message" => "Mağaza adı boş olamaz");
+                    $this->data[] = array("error" => true, "store_name" => $sn, "message" => "Mağaza adı boş olamaz");
                 }
 
             }
 
 
         } else {
-            self::$data = array("error" => true, "store_name" => $storeName, "message" => "Mağaza ad(lar)ı dizi olarak giriniz.");
+            $this->data = array("error" => true, "store_name" => $storeName, "message" => "Mağaza ad(lar)ı dizi olarak giriniz.");
         }
 
-        return self::ReturnWithTypes($type);
+        return $this->ReturnWithTypes($type);
 
     }
 
@@ -334,20 +334,20 @@ class Sahibinden
      * @return json,array,xml
      * @return default = json
      */
-    static function MagazaKategori($storeName, $kategori = NULL, $type = "json", $proxy = false)
+    public function MagazaKategori($storeName, $kategori = NULL, $type = "json", $proxy = false)
     {
         if (!empty($storeName)) {
             if ($kategori == NULL) {
-                $url = "https://" . $storeName . self::$storeEndUrl;
+                $url = "https://" . $storeName . $this->storeEndUrl;
             } else {
-                $url = "https://" . $storeName . self::$storeEndUrl . "/" . $kategori;
+                $url = "https://" . $storeName . $this->storeEndUrl . "/" . $kategori;
             }
 
 
             if ($proxy == true) {
-                $open = self::Curl($url, true);
+                $open = $this->Curl($url, true);
             } else {
-                $open = self::Curl($url);
+                $open = $this->Curl($url);
             }
             if (!empty(@$open["error"])) {
                 if (!str_get_html($open)->find("div.errorPage404")) {
@@ -362,21 +362,21 @@ class Sahibinden
                                     "title" => trim($c->plaintext),
                                     "uri" => $uri[0],
                                     "is_current_category" => $uri[0] == $kategori ? true : false,
-                                    "url" => "https://" . $storeName . self::$storeEndUrl . "/" . $uri[0],
+                                    "url" => "https://" . $storeName . $this->storeEndUrl . "/" . $uri[0],
                                     "sub_categories" => NULL
                                 );
                             }
                             $level = str_replace("level", "", $u->class);
                             if ($level == 0) {
-                                self::$data[] = $cats;
+                                $this->data[] = $cats;
                             } else if ($level == 1) {
-                                self::$data[$x - $level]["sub_categories"][] = $cats;
+                                $this->data[$x - $level]["sub_categories"][] = $cats;
                             } else if ($level == 2) {
-                                self::$data[$x - $level]["sub_categories"][$x - $level]["sub_categories"][] = $cats;
+                                $this->data[$x - $level]["sub_categories"][$x - $level]["sub_categories"][] = $cats;
                             } else if ($level == 3) {
-                                self::$data[$x - $level]["sub_categories"][$x - $level]["sub_categories"][$x - $level]["sub_categories"][] = $cats;
+                                $this->data[$x - $level]["sub_categories"][$x - $level]["sub_categories"][$x - $level]["sub_categories"][] = $cats;
                             } else if ($level == 4) {
-                                self::$data[$x - $level]["sub_categories"][$x - $level]["sub_categories"][$x - $level]["sub_categories"][$x - $level]["sub_categories"][] = $cats;
+                                $this->data[$x - $level]["sub_categories"][$x - $level]["sub_categories"][$x - $level]["sub_categories"][$x - $level]["sub_categories"][] = $cats;
                             }
 
 
@@ -385,17 +385,17 @@ class Sahibinden
 
 
                 } else {
-                    self::$data[] = array("error" => true, "store_name" => $storeName, "message" => "Sayfa Bulunamadı.");
+                    $this->data[] = array("error" => true, "store_name" => $storeName, "message" => "Sayfa Bulunamadı.");
                 }
             } else {
-                self::$data[] = array("error" => true, "store_name" => $storeName, "message" => $open["error"]);
+                $this->data[] = array("error" => true, "store_name" => $storeName, "message" => $open["error"]);
             }
 
         } else {
-            self::$data[] = array("error" => true, "store_name" => $storeName, "message" => "Mağaza adı giriniz.");
+            $this->data[] = array("error" => true, "store_name" => $storeName, "message" => "Mağaza adı giriniz.");
         }
 
-        return self::ReturnWithTypes($type);
+        return $this->ReturnWithTypes($type);
 
     }
 
@@ -410,10 +410,10 @@ class Sahibinden
      * @param $proxy false|true
      * @return JSON,XML,Array
      */
-    static function MagazaListe($storeName, $itemCount = 20, $filters = NULL, $type = "json", $proxy = false)
+    public function MagazaListe($storeName, $itemCount = 20, $filters = NULL, $type = "json", $proxy = false)
     {
 
-        self::$data = array();
+        $this->data = array();
         $filterText = "";
         if (is_array($filters)) {
             foreach ($filters as $key => $val) {
@@ -438,11 +438,11 @@ class Sahibinden
         for ($p = 0; $p <= $pageCount - 1; $p++) {
             $page = $p * 20;
             $pageFilter = '?pagingOffset=' . $page;
-            $url = "https://" . $storeName . self::$storeEndUrl . $pageFilter . $filterText;
+            $url = "https://" . $storeName . $this->storeEndUrl . $pageFilter . $filterText;
             if ($proxy == true) {
-                $open = self::Curl($url, true);
+                $open = $this->Curl($url, true);
             } else {
-                $open = self::Curl($url);
+                $open = $this->Curl($url);
             }
 
             $columns = str_get_html($open)->find("div.classified-list table thead th");
@@ -477,32 +477,32 @@ class Sahibinden
                                 for ($x = 0; $x <= $colCount - 1; $x++) {
                                     $row = str_get_html($open)->find("div.classified-list table tbody tr", $j)->find("td", $x);
                                     if (!empty(trim($columns[$x]->plaintext))) {
-                                        $title = self::turkishChars(strtolower(trim($columns[$x]->plaintext)));
+                                        $title = $this->turkishChars(strtolower(trim($columns[$x]->plaintext)));
                                         $d[$title] = trim($row->plaintext);
                                     }
                                 }
 
 
-                                self::$data[] = $d;
+                                $this->data[] = $d;
                                 $ic++;
                             }
                         }
                     } else {
-                        self::$data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
+                        $this->data[] = array("error" => true, "url" => $url, "message" => "Sonuç Bulunamadı.");
                     }
 
                 } else {
-                    self::$data[] = array("error" => true, "store_name" => $storeName, "message" => "Sayfa Bulunamadı.");
+                    $this->data[] = array("error" => true, "store_name" => $storeName, "message" => "Sayfa Bulunamadı.");
                 }
             } else {
-                self::$data[] = array("error" => true, "store_name" => $storeName, "message" => $open["error"]);
+                $this->data[] = array("error" => true, "store_name" => $storeName, "message" => $open["error"]);
             }
 
 
         }
 
 
-        return self::ReturnWithTypes($type);
+        return $this->ReturnWithTypes($type);
 
     }
 
@@ -515,16 +515,16 @@ class Sahibinden
      * @param $proxy false|true
      * @return JSON,XML,Array
      */
-    static function MagazaDanismanlari($storeName, $type = "json", $proxy = false)
+    public function MagazaDanismanlari($storeName, $type = "json", $proxy = false)
     {
 
-        self::$data = array();
+        $this->data = array();
         if (!empty($storeName)) {
-            $url = "https://" . $storeName . self::$storeEndUrl;
+            $url = "https://" . $storeName . $this->storeEndUrl;
             if ($proxy == true) {
-                $open = self::Curl($url, true);
+                $open = $this->Curl($url, true);
             } else {
-                $open = self::Curl($url);
+                $open = $this->Curl($url);
             }
 
             if (!empty(@$open["error"])) {
@@ -539,7 +539,7 @@ class Sahibinden
                     for ($a = 0; $a <= count($agentsLink) - 1; $a++) {
                         $agentID = explode("userId=", $agentsLink[$a]->href);
 
-                        self::$data[] = array(
+                        $this->data[] = array(
                             "name" => trim($agentsName[$a]->plaintext),
                             "userId" => $agentID[1],
                             "image_200" => $agentsImg[$a]->src,
@@ -549,17 +549,17 @@ class Sahibinden
                     }
 
                 } else {
-                    self::$data[] = array("error" => true, "store_name" => $storeName, "message" => "Sayfa Bulunamadı.");
+                    $this->data[] = array("error" => true, "store_name" => $storeName, "message" => "Sayfa Bulunamadı.");
                 }
             } else {
-                self::$data[] = array("error" => true, "store_name" => $storeName, "message" => $open["error"]);
+                $this->data[] = array("error" => true, "store_name" => $storeName, "message" => $open["error"]);
             }
 
         } else {
-            self::$data = array("error" => true, "store_name" => $storeName, "message" => "Mağaza adı bulunamadı.");
+            $this->data = array("error" => true, "store_name" => $storeName, "message" => "Mağaza adı bulunamadı.");
         }
 
-        return self::ReturnWithTypes($type);
+        return $this->ReturnWithTypes($type);
 
     }
 
@@ -571,12 +571,12 @@ class Sahibinden
      * @param $proxy false|true
      * @return  JSON,XML,Array
      */
-    static function TownCodes($il = NULL, $type = "json")
+    public function TownCodes($il = NULL, $type = "json")
     {
         /* ilce.html den gelen veri ilce.json a bu şekilde aktarıldı.
         $data = file_get_html("ilce.html")->find("li");
         foreach ($data as $e) {
-            self::$data[$e->attr["data-parentid"]][] = array(
+            $this->data[$e->attr["data-parentid"]][] = array(
                 "il-id" => $e->attr["data-parentid"],
                 "il-adi" => $e->attr["data-parentlabel"],
                 "ilce-id" => $e->attr["data-id"],
@@ -599,11 +599,11 @@ class Sahibinden
         } else if ($type == "xml") {
             if ($il != NULL) {
                 $xml = new SimpleXMLElement('<?xml version="1.0"?><root></root>');
-                self::array_to_xml($ilceJson[$il], $xml);
+                $this->array_to_xml($ilceJson[$il], $xml);
                 return $xml->asXML();
             } else {
                 $xml = new SimpleXMLElement('<?xml version="1.0"?><root></root>');
-                self::array_to_xml($ilceJson, $xml);
+                $this->array_to_xml($ilceJson, $xml);
                 return $xml->asXML();
             }
         }
@@ -849,12 +849,12 @@ class Sahibinden
     {
 
         if ($type == "json" or empty($type)) {
-            return json_encode(self::$data);
+            return json_encode($this->data);
         } else if ($type == "array") {
-            return self::$data;
+            return $this->data;
         } else if ($type == "xml") {
             $xml = new SimpleXMLElement('<?xml version="1.0"?><root></root>');
-            self::array_to_xml(self::$data, $xml);
+            $this->array_to_xml($this->data, $xml);
             return $xml->asXML();
         }
     }
@@ -951,10 +951,10 @@ class Sahibinden
             if (is_array($value)) {
                 if (!is_numeric($key)) {
                     $subnode = $xml_user_info->addChild("$key");
-                    self::array_to_xml($value, $subnode);
+                    $this->array_to_xml($value, $subnode);
                 } else {
                     $subnode = $xml_user_info->addChild("item");
-                    self::array_to_xml($value, $subnode);
+                    $this->array_to_xml($value, $subnode);
                 }
             } else {
                 $xml_user_info->addChild("$key", htmlspecialchars("$value"));
